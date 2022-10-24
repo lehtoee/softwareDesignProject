@@ -5,6 +5,7 @@ using namespace std;
 
 int main()
 {
-    apiCalls("Digitraffic", 0);
+    apiCalls api;
+    api.pullData("Digitraffic");
 
 }

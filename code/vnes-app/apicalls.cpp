@@ -9,46 +9,44 @@
 #include <QJsonDocument>
 #include <QEventLoop>
 
- // Data vector = depending on selected location: x_min, x_max, y_min, y_max (float)
-apiCalls::apiCalls(std::string source, float data)
+
+apiCalls::apiCalls()
 {
- if (source == "FMI")
- {
-     std::cout<<source<<std::endl;
- }
- else if (source == "Digitraffic")
- {
-     QEventLoop eventLoop;
 
-     QString url = "https://tie.digitraffic.fi/api/v3/data/road-conditions/21/61/22/62";
+}
 
-     QNetworkAccessManager *mgr = new QNetworkAccessManager();
+apiCalls::~apiCalls()
+{
 
-     QNetworkRequest request = QNetworkRequest(QUrl(url));
-     QNetworkReply* reply = mgr->get(request);
-     eventLoop.exec();
-     if (reply->error() == QNetworkReply::NoError) {
-         qDebug() << "Jee";
+}
 
+void apiCalls::pullData(std::string source)
+{
+    QEventLoop loop;
+    QNetworkAccessManager *mgr = new QNetworkAccessManager();
+    QObject::connect(mgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(apiData(QNetworkReply*)));
+    QObject::connect(mgr, SIGNAL(finished(QNetworkReply*)), &loop, SLOT(quit()));
+    if (source == "FMI")
+    {
+        std::cout<<source<<std::endl;
+    }
+    else if (source == "Digitraffic")
+    {
+        QString url = "https://tie.digitraffic.fi/api/v3/data/road-conditions/21/61/22/62";
+        QNetworkRequest request = QNetworkRequest(QUrl(url));
+        mgr->get(request);
+        loop.exec();
+    }
+    else if (source == "Both")
+    {
+        std::cout<<source<<std::endl;
+    }
+    else {
+        std::cout << "error" << std::endl;
+    }
+}
 
-     }
-     else {
-         qDebug() << "eii";
-     }
-
-
-     // std::cout<<source<<std::endl;
-
-
-
-
-
- }
- else if (source == "Both")
- {
-     std::cout<<source<<std::endl;
- }
- else {
-     std::cout << "error" << std::endl;
- }
+void apiCalls::apiData(QNetworkReply* reply)
+{
+    qDebug()<<reply->readAll();;
 }
