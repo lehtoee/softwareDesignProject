@@ -1,9 +1,10 @@
 #include <iostream>
+#include <apicalls.hh>
 
 using namespace std;
 
 int main()
 {
-    cout << "Hello World!" << endl;
-    return 0;
+    apiCalls("Digitraffic", 0);
+
 }
