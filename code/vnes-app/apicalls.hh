@@ -3,6 +3,7 @@
 #include <QNetworkAccessManager>
 #include <QApplication>
 #include <QObject>
+#include <QNetworkReply>
 
 class apiCalls : public QObject
 {
