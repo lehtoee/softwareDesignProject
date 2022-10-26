@@ -48,5 +48,7 @@ void apiCalls::pullData(std::string source)
 
 void apiCalls::apiData(QNetworkReply* reply)
 {
-    qDebug()<<reply->readAll();
+    //qDebug()<<reply->readAll();
+    QByteArray buffer = reply->readAll();
+    qDebug() << buffer;
 }

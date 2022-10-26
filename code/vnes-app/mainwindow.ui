@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="fetchDataButton">
     <property name="geometry">
      <rect>
       <x>260</x>
@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>PushButton</string>
+     <string>Fetch Data</string>
     </property>
    </widget>
   </widget>
@@ -34,7 +34,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>
