@@ -10,7 +10,7 @@
 #include <QEventLoop>
 
 
-apiCalls::apiCalls()
+apiCalls::apiCalls(QObject *parent) : QObject(parent)
 {
 
 }
@@ -22,10 +22,8 @@ apiCalls::~apiCalls()
 
 void apiCalls::pullData(std::string source)
 {
-    QEventLoop loop;
     QNetworkAccessManager *mgr = new QNetworkAccessManager();
     QObject::connect(mgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(apiData(QNetworkReply*)));
-    QObject::connect(mgr, SIGNAL(finished(QNetworkReply*)), &loop, SLOT(quit()));
     if (source == "FMI")
     {
         std::cout<<source<<std::endl;
@@ -35,7 +33,6 @@ void apiCalls::pullData(std::string source)
         QString url = "https://tie.digitraffic.fi/api/v3/data/road-conditions/21/61/22/62";
         QNetworkRequest request = QNetworkRequest(QUrl(url));
         mgr->get(request);
-        loop.exec();
     }
     else if (source == "Both")
     {
@@ -44,9 +41,12 @@ void apiCalls::pullData(std::string source)
     else {
         std::cout << "error" << std::endl;
     }
+    std::cin.ignore();
+    return;
+
 }
 
 void apiCalls::apiData(QNetworkReply* reply)
 {
-    qDebug()<<reply->readAll();;
+    qDebug()<<reply->readAll();
 }

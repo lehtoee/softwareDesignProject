@@ -6,7 +6,12 @@ QT += network core widgets
 
 SOURCES += \
         apicalls.cpp \
-        main.cpp
+        main.cpp \
+        mainwindow.cpp
 
 HEADERS += \
-    apicalls.hh
+    apicalls.hh \
+    mainwindow.h
+
+FORMS += \
+    mainwindow.ui

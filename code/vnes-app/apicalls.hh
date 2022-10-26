@@ -8,7 +8,7 @@ class apiCalls : public QObject
 {
     Q_OBJECT
 public:
-    apiCalls();
+    explicit apiCalls(QObject *parent = nullptr);
     ~apiCalls();
     void pullData(std::string source);
 
