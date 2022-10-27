@@ -19,5 +19,5 @@ MainWindow::~MainWindow()
 void MainWindow::onFetchDataButtonClicked()
 {
     apiCalls api;
-    api.pullData("Digitraffic");
+    api.pullData("FMI");
 }

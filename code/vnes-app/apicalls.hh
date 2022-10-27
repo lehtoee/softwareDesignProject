@@ -15,6 +15,10 @@ public:
 
 private slots:
     void apiData(QNetworkReply* reply);
+    //void apiError(QNetworkReply* reply, QList<QSslError> &errors);
+
+private:
+    QNetworkAccessManager* mgr;
 };
 
 #endif // APICALLS_HH
