@@ -15,10 +15,17 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+
 private slots:
     void onFetchDataButtonClicked();
 
-private:
+    void on_trafficButton_clicked();
+
+    void on_weatherButton_clicked();
+
+    void on_combinedButton_clicked();
+
+  private:
     Ui::MainWindow *ui;
 };
 
