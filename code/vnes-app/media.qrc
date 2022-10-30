@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>media/cloud.png</file>
+        <file>media/combinedData.png</file>
+        <file>media/traffic.png</file>
+        <file>media/fetchData.png</file>
+    </qresource>
+</RCC>

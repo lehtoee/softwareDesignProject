@@ -1,7 +1,20 @@
 TEMPLATE = app
-CONFIG += console c++11
+CONFIG += console c++20
 CONFIG -= app_bundle
-CONFIG -= qt
+CONFIG += qt
+QT += network core widgets
 
 SOURCES += \
-        main.cpp
+        apicalls.cpp \
+        main.cpp \
+        mainwindow.cpp
+
+HEADERS += \
+    apicalls.hh \
+    mainwindow.h
+
+FORMS += \
+    mainwindow.ui
+
+RESOURCES += \
+    media.qrc
