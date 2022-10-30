@@ -14,7 +14,9 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
+    int locationDropDownIndex;
+    int timelineDropDownIndex;
+    int dataTypeDropDownIndex;
 
 private slots:
     void onFetchDataButtonClicked();
@@ -25,7 +27,23 @@ private slots:
 
     void on_combinedButton_clicked();
 
-  private:
+    void setTimelineDropDown();
+
+    void setLocationDropDown();
+
+    void setTrafficDataDropDowns();
+
+    void setWeatherDataDropDowns();
+
+    void setCombinedDataDropDowns();
+
+    void on_locationDropDown_activated(int index);
+
+    void on_timelineDropDown_activated(int index);
+
+    void on_datatypeDropDown_activated(int index);
+
+private:
     Ui::MainWindow *ui;
 };
 
