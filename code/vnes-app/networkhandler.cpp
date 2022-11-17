@@ -23,17 +23,20 @@ void NetworkHandler::fetchDataJson(std::string source, std::string datatype,
                     + coordinates[0] + "&yMin=" + coordinates[1] + "&xMax="
                     + coordinates[2] + "&yMax=" + coordinates[3]
                     + "&taskId=&domain=state-roads";
-            const QUrl url = QUrl(myurl);
-            QNetworkRequest request(url);
-            manager->get(request);
+
         }
         else if(datatype == "roadconditions"){
-
+            myurl = myurl + "v3/data/road-conditions/" + coordinates[0] + "/"
+                    + coordinates[1] + "/" + coordinates[2] + "/"
+                    + coordinates[3];
         }
         else{
-
+            myurl= myurl + "traffic-message/v1/messages?inactiveHours=0"
+                           "&includeAreaGeometry=false&situationType=";
         }
-
+        const QUrl url = QUrl(myurl);
+        QNetworkRequest request(url);
+        manager->get(request);
     }
     else if(source == "both"){
 

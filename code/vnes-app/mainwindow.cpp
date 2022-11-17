@@ -100,7 +100,7 @@ void MainWindow::setCombinedDataDropDowns()
 void MainWindow::onFetchDataButtonClicked()
 {
     std::vector<QString> j({"21","61","22","62"});
-    controller_->pushButtonClicked("Digitraffic", "maintenance", j, "2022-01-19T10:06:38Z");
+    controller_->pushButtonClicked("Digitraffic", "traffic", j, "2022-01-19T10:06:38Z");
 }
 
 void MainWindow::on_trafficButton_clicked()
