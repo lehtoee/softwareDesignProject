@@ -3,6 +3,12 @@
 
 
 #include "networkhandler.h"
+#include <qjsonobject.h>
+#include <qjsondocument.h>
+#include <map>
+#include <QFile>
+#include <iostream>
+#include <QJsonArray>
 
 class Controller : public QObject
 {
@@ -13,7 +19,8 @@ public:
 
     void pushButtonClicked(std::string source, std::string datatype,
                            std::vector<QString> coordinates, std::string time);
-
+    void parseDigitrafficData(QJsonObject jsonData, std::string datatype);
+    void parseFMIData(std::string datatype);
 
 private:
 

@@ -1,4 +1,6 @@
 #include "networkhandler.h"
+#include <QJsonArray>
+#include <sstream>
 
 NetworkHandler::NetworkHandler(QObject *parent):
  QObject{parent}
@@ -30,8 +32,8 @@ void NetworkHandler::fetchDataJson(std::string source, std::string datatype,
                     + coordinates[1] + "/" + coordinates[2] + "/"
                     + coordinates[3];
         }
-        else{
-            myurl= myurl + "traffic-message/v1/messages?inactiveHours=0"
+        else if(datatype == "trafficmessages"){
+            myurl= myurl + "traffic-message/v1/messages?inactiveHours="
                            "&includeAreaGeometry=false&situationType=";
         }
         const QUrl url = QUrl(myurl);
@@ -60,6 +62,7 @@ void NetworkHandler::jsonFetchFinished(QNetworkReply *reply)
     }
     qDebug() << "fetch ok";
 
+
     //convert to Json object
     QByteArray input = reply->readAll();
     QJsonDocument document = QJsonDocument::fromJson(input);
@@ -67,7 +70,6 @@ void NetworkHandler::jsonFetchFinished(QNetworkReply *reply)
     jsonData_ = obj;
 
     qDebug() << jsonData_;
-
     reply->deleteLater();
 }
 
