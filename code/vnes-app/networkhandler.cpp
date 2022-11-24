@@ -16,6 +16,7 @@ void NetworkHandler::fetchDataJson(std::string source, std::string datatype,
     if(source == "FMI"){
         QString baseURL = "https://opendata.fmi.fi/wfs?request=getFeature&version=2.0.0&storedquery_id=fmi";
         if(datatype == "weather"){
+            QString URL = baseURL+"::observations::weather::hourly::simple&bbox=" + coordinates[0]+","+coordinates[2]+","+coordinates[1]+","+coordinates[3]+"&starttime=";
 
         }
         else if(datatype == "rainfall") {
@@ -74,7 +75,7 @@ void NetworkHandler::jsonFetchFinished(QNetworkReply *reply)
     QJsonDocument document = QJsonDocument::fromJson(input);
     QJsonObject obj = document.object();
     jsonData_ = obj;
-
+    // Tähän joku emit jonka controller sitte pick uppaa että tän jsonData_ muuttujan saa tallennettuu johki
     qDebug() << jsonData_;
     reply->deleteLater();
 }

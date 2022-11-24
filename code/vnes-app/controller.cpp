@@ -1,9 +1,11 @@
 #include "controller.h"
+#include <ctime>
 
 Controller::Controller(NetworkHandler* networkhandler)
     : networkhandler_(networkhandler)
 {
-
+    timeNDate timeDate;
+    getTimeDate();
 }
 
 Controller::~Controller()
@@ -14,6 +16,7 @@ Controller::~Controller()
 void Controller::pushButtonClicked(std::string source, std::string datatype,
                                    std::vector<QString> coordinates, std::string time )
 {
+    qDebug()<<timeDate.day;
     networkhandler_->fetchDataJson(source, datatype, coordinates, time);
     QJsonObject jsonData = networkhandler_->getJsonData();
     //some async stuff would be needed here
@@ -105,4 +108,16 @@ void Controller::parseDigitrafficData(QJsonObject jsonData, std::string datatype
 void Controller::parseFMIData(std::string datatype)
 {
 
+}
+
+void Controller::getTimeDate()
+{
+
+    time_t currentTime = time(0);
+    tm *localTime = localtime(&currentTime);
+    timeDate.year = localTime->tm_year + 1900;
+    timeDate.month = localTime->tm_mon + 1;
+    timeDate.day = localTime->tm_mday;
+    timeDate.hour = localTime->tm_hour;
+    timeDate.minute = localTime->tm_min;
 }

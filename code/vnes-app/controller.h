@@ -21,10 +21,19 @@ public:
                            std::vector<QString> coordinates, std::string time);
     void parseDigitrafficData(QJsonObject jsonData, std::string datatype);
     void parseFMIData(std::string datatype);
+    void getTimeDate();
 
 private:
 
     NetworkHandler* networkhandler_;
+    struct timeNDate{
+        int hour;
+        int minute;
+        int year;
+        int month;
+        int day;
+    } timeDate;
+   // timeNDate timeDate;
 
 };
 #endif // CONTROLLER_H
