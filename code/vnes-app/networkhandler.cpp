@@ -14,7 +14,13 @@ void NetworkHandler::fetchDataJson(std::string source, std::string datatype,
     connect(manager, &QNetworkAccessManager::finished, this, &NetworkHandler::jsonFetchFinished);
 
     if(source == "FMI"){
+        QString baseURL = "https://opendata.fmi.fi/wfs?request=getFeature&version=2.0.0&storedquery_id=fmi";
+        if(datatype == "weather"){
 
+        }
+        else if(datatype == "rainfall") {
+
+        }
     }
     else if(source == "Digitraffic"){
         QString myurl = "https://tie.digitraffic.fi/api/";
