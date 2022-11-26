@@ -7,8 +7,8 @@ NetworkHandler::NetworkHandler(QObject *parent):
 {
 }
 
-void NetworkHandler::fetchDataJson(std::string source, std::string datatype,
-                                   std::vector<QString> coordinates, std::string time)
+void NetworkHandler::fetchDataJson(QString source, QString datatype,
+                                   std::vector<QString> coordinates, QString time)
 {
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
     connect(manager, &QNetworkAccessManager::finished, this, &NetworkHandler::jsonFetchFinished);
@@ -18,7 +18,7 @@ void NetworkHandler::fetchDataJson(std::string source, std::string datatype,
     else if(source == "Digitraffic"){
         QString myurl = "https://tie.digitraffic.fi/api/";
         if(datatype == "maintenance"){
-            QString qstrtime = QString::fromStdString(time);
+            QString qstrtime = time;
             myurl = myurl + "maintenance/v1/tracking/routes?endFrom="
                     + "2022-01-19T09%3A00%3A00Z" + "&endBefore=" + "2022-01-19T10%3A00%3A00Z" + "&xMin="
                     + coordinates[0] + "&yMin=" + coordinates[1] + "&xMax="

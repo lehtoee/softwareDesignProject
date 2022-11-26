@@ -17,15 +17,15 @@ public:
     Controller(NetworkHandler* networkhandler);
     ~Controller();
 
-    void pushButtonClicked(std::string source, std::string datatype,
-                           std::vector<QString> coordinates, std::string time);
-    void parseDigitrafficData(QJsonObject jsonData, std::string datatype);
-    void parseFMIData(std::string datatype);
+    void pushButtonClicked(QString source, QString datatype,
+                           std::vector<QString> coordinates, QString time);
+    void parseDigitrafficData(QJsonObject jsonData, QString datatype);
+    void parseFMIData(QString datatype);
     void getTimeDate();
 
 
 private:
-    std::tuple<QString, QString> parseTimeDate(std::string time);
+    std::tuple<QString, QString> parseTimeDate(QString time);
     NetworkHandler* networkhandler_;
     struct timeNDate{
         int hour;

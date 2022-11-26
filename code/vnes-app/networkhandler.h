@@ -17,8 +17,8 @@ class NetworkHandler : public QObject
 public:
     NetworkHandler(QObject* parent = nullptr);
 
-    void fetchDataJson(std::string source, std::string datatype,
-                       std::vector<QString> coordinates, std::string time);
+    void fetchDataJson(QString source, QString datatype,
+                       std::vector<QString> coordinates, QString time);
     QJsonObject getJsonData();
     void fetchDataXML(QString datatype, std::vector<QString> coordinates, std::tuple<QString, QString> time);
 
