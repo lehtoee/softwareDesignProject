@@ -23,8 +23,9 @@ public:
     void parseFMIData(std::string datatype);
     void getTimeDate();
 
-private:
 
+private:
+    std::tuple<QString, QString> parseTimeDate(std::string time);
     NetworkHandler* networkhandler_;
     struct timeNDate{
         int hour;

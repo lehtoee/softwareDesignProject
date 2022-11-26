@@ -20,6 +20,7 @@ public:
     void fetchDataJson(std::string source, std::string datatype,
                        std::vector<QString> coordinates, std::string time);
     QJsonObject getJsonData();
+    void fetchDataXML(QString datatype, std::vector<QString> coordinates, std::tuple<QString, QString> time);
 
 private slots:
     void jsonFetchFinished(QNetworkReply* reply);
