@@ -8,6 +8,9 @@
 #include <map>
 #include <QFile>
 #include <iostream>
+#include <unordered_map>
+#include <tuple>
+#include <vector>
 
 
 class NetworkHandler : public QObject

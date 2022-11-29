@@ -27,6 +27,7 @@ void NetworkHandler::fetchDataJson(QString source, QString datatype,
 
         }
         else if(datatype == "roadconditions"){
+
             myurl = myurl + "v3/data/road-conditions/" + coordinates[0] + "/"
                     + coordinates[1] + "/" + coordinates[2] + "/"
                     + coordinates[3];

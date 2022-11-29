@@ -8,6 +8,7 @@
 #include <map>
 #include <QFile>
 #include <iostream>
+#include <unordered_map>
 #include <QJsonArray>
 
 class Controller : public QObject
@@ -23,7 +24,6 @@ public:
     void parseFMIData(QString datatype);
     void getTimeDate();
 
-
 private:
     std::tuple<QString, QString> parseTimeDate(QString time);
     NetworkHandler* networkhandler_;
@@ -34,6 +34,8 @@ private:
         int month;
         int day;
     } timeDate;
+   //std::unordered_map<std::string, std::string> digitrafficData;
+   //std::vector<QString> coordinates_;
    // timeNDate timeDate;
 
 };
