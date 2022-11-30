@@ -142,8 +142,6 @@ void MainWindow::on_locationDropDown_activated(int index)
 void MainWindow::on_timelineDropDown_activated(int index)
 {
     timelineDropDownIndex = index;
-    QJsonObject k;
-    controller_->parseDigitrafficData(k, "maintenance");
 }
 
 

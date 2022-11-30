@@ -6,6 +6,7 @@
 Controller::Controller(NetworkHandler* networkhandler)
     : networkhandler_(networkhandler)
 {
+    std::unordered_map<QString, QString> digitrafficData;
     //timeNDate timeDate;
     //getTimeDate();
 }
@@ -21,7 +22,6 @@ void Controller::pushButtonClicked(QString source, QString datatype,
     // Get the start and end time of
     //std::tuple<QString, QString> startNendTime = parseTimeDate(time);
     //qDebug() << get<0>(startNendTime) + " - " + get<1>(startNendTime);
-    //this->coordinates_ = coordinates;
 
     networkhandler_->fetchDataJson(source, datatype, coordinates, time);
     QJsonObject jsonData = networkhandler_->getJsonData();
@@ -31,9 +31,8 @@ void Controller::pushButtonClicked(QString source, QString datatype,
 
 void Controller::parseDigitrafficData(QJsonObject jsonData, QString datatype)
 {
-    std::unordered_map<QString, QString> digitrafficData;
-    QJsonObject jsonData_ = networkhandler_->getJsonData();
-    int timeTemp;
+    digitrafficData.clear();
+
     if(datatype == "maintenance"){
          QJsonArray maintenanceFeatures = jsonData_["features"].toArray();
          int counter = 1;
@@ -86,13 +85,8 @@ void Controller::parseDigitrafficData(QJsonObject jsonData, QString datatype)
 
     }
     else if(datatype == "trafficmessages"){
-        //this thing counts the traffic messages for the given area
-        std::vector<QString> coordinates_({"22","60","28","62"});
-
-
 
         QJsonArray features = jsonData_["features"].toArray();
-        QJsonArray geometry;
 
         int count = 0;
         for(auto ele : features){
@@ -125,25 +119,8 @@ void Controller::parseDigitrafficData(QJsonObject jsonData, QString datatype)
         }
 
         QString stringCount = "count";
-        auto it = digitrafficData.find(stringCount);
 
-        if(it != digitrafficData.end()){
-            qDebug() << "joo";
-            it->second = QString::number(5);
-        }
-        else{
-            qDebug() << "noniin";
-            digitrafficData.insert({stringCount, QString::number(count)});
-        }
-
-        auto iter = digitrafficData.find("count");
-
-
-        digitrafficData.insert({"count", QString::number(5)});
-
-        for(auto ele : digitrafficData){
-            qDebug() << ele.second;
-        }
+        digitrafficData.insert({stringCount, QString::number(count)});
     }
 }
 
