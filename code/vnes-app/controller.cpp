@@ -20,8 +20,10 @@ void Controller::pushButtonClicked(QString source, QString datatype,
                                    std::vector<QString> coordinates, QString time )
 {
     // Get the start and end time of
-    //std::tuple<QString, QString> startNendTime = parseTimeDate(time);
-    //qDebug() << get<0>(startNendTime) + " - " + get<1>(startNendTime);
+    std::tuple<QString, QString> startNendTime = parseTimeDate("2");
+    qDebug() << get<0>(startNendTime) + " - " + get<1>(startNendTime);
+    networkhandler_->fetchDataXML("weatherObserved", coordinates, startNendTime);
+    //this->coordinates_ = coordinates;
 
     networkhandler_->fetchDataJson(source, datatype, coordinates, time);
     QJsonObject jsonData = networkhandler_->getJsonData();
@@ -31,10 +33,12 @@ void Controller::pushButtonClicked(QString source, QString datatype,
 
 void Controller::parseDigitrafficData(QJsonObject jsonData, QString datatype)
 {
-    digitrafficData.clear();
+    std::vector<QString> coordinates({"22","60","28","62"});
 
+    digitrafficData.clear();
+    int timeTemp;
     if(datatype == "maintenance"){
-         QJsonArray maintenanceFeatures = jsonData_["features"].toArray();
+         QJsonArray maintenanceFeatures = jsonData["features"].toArray();
          int counter = 1;
          for(auto ele : maintenanceFeatures){
              QString task = ele.toObject().value("properties")
@@ -44,7 +48,7 @@ void Controller::parseDigitrafficData(QJsonObject jsonData, QString datatype)
          }
     }
     else if(datatype == "roadconditions"){
-        QJsonArray weatherData = jsonData_["weatherData"].toArray();
+        QJsonArray weatherData = jsonData["weatherData"].toArray();
 
         QJsonArray roadConditions = weatherData[0].toObject()
                 .value("roadConditions").toArray();
@@ -86,7 +90,7 @@ void Controller::parseDigitrafficData(QJsonObject jsonData, QString datatype)
     }
     else if(datatype == "trafficmessages"){
 
-        QJsonArray features = jsonData_["features"].toArray();
+        QJsonArray features = jsonData["features"].toArray();
 
         int count = 0;
         for(auto ele : features){
@@ -96,10 +100,10 @@ void Controller::parseDigitrafficData(QJsonObject jsonData, QString datatype)
                     .toObject().value("coordinates").toArray();
 
             if(type == "Point"){
-                if(coords[0].toDouble() > coordinates_[0].toDouble()
-                        && coords[0].toDouble() < coordinates_[2].toDouble()
-                        && coords[1].toDouble() > coordinates_[1].toDouble()
-                        && coords[1].toDouble() < coordinates_[3].toDouble())
+                if(coords[0].toDouble() > coordinates[0].toDouble()
+                        && coords[0].toDouble() < coordinates[2].toDouble()
+                        && coords[1].toDouble() > coordinates[1].toDouble()
+                        && coords[1].toDouble() < coordinates[3].toDouble())
                 {
                         count++;
                 }
@@ -107,10 +111,10 @@ void Controller::parseDigitrafficData(QJsonObject jsonData, QString datatype)
             }
             else if(type=="MultiLineString"){
                 QJsonArray multiCoord = coords[0].toArray()[0].toArray();
-                if(multiCoord[0].toDouble() > coordinates_[0].toDouble()
-                        && multiCoord[0].toDouble() < coordinates_[2].toDouble()
-                        && multiCoord[1].toDouble() > coordinates_[1].toDouble()
-                        && multiCoord[1].toDouble() < coordinates_[3].toDouble())
+                if(multiCoord[0].toDouble() > coordinates[0].toDouble()
+                        && multiCoord[0].toDouble() < coordinates[2].toDouble()
+                        && multiCoord[1].toDouble() > coordinates[1].toDouble()
+                        && multiCoord[1].toDouble() < coordinates[3].toDouble())
                 {
                     count++;
                 }

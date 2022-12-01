@@ -35,6 +35,7 @@ private:
         int day;
     } timeDate;
    std::unordered_map<QString, QString> digitrafficData;
+
    // timeNDate timeDate;
 
 };
