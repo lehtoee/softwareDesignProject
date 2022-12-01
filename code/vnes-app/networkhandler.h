@@ -8,6 +8,9 @@
 #include <map>
 #include <QFile>
 #include <iostream>
+#include <unordered_map>
+#include <tuple>
+#include <vector>
 
 
 class NetworkHandler : public QObject
@@ -17,9 +20,10 @@ class NetworkHandler : public QObject
 public:
     NetworkHandler(QObject* parent = nullptr);
 
-    void fetchDataJson(std::string source, std::string datatype,
-                       std::vector<QString> coordinates, std::string time);
+    void fetchDataJson(QString source, QString datatype,
+                       std::vector<QString> coordinates, QString time);
     QJsonObject getJsonData();
+    void fetchDataXML(QString datatype, std::vector<QString> coordinates, std::tuple<QString, QString> time);
 
 private slots:
     void jsonFetchFinished(QNetworkReply* reply);

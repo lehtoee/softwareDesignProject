@@ -4,5 +4,67 @@
         <file>media/combinedData.png</file>
         <file>media/traffic.png</file>
         <file>media/fetchData.png</file>
+        <file>media/d000.png</file>
+        <file>media/d100.png</file>
+        <file>media/d200.png</file>
+        <file>media/d210.png</file>
+        <file>media/d211.png</file>
+        <file>media/d212.png</file>
+        <file>media/d220.png</file>
+        <file>media/d221.png</file>
+        <file>media/d222.png</file>
+        <file>media/d240.png</file>
+        <file>media/d300.png</file>
+        <file>media/d310.png</file>
+        <file>media/d311.png</file>
+        <file>media/d312.png</file>
+        <file>media/d320.png</file>
+        <file>media/d321.png</file>
+        <file>media/d322.png</file>
+        <file>media/d340.png</file>
+        <file>media/d400.png</file>
+        <file>media/d410.png</file>
+        <file>media/d411.png</file>
+        <file>media/d412.png</file>
+        <file>media/d420.png</file>
+        <file>media/d421.png</file>
+        <file>media/d422.png</file>
+        <file>media/d430.png</file>
+        <file>media/d431.png</file>
+        <file>media/d432.png</file>
+        <file>media/d440.png</file>
+        <file>media/d500.png</file>
+        <file>media/d600.png</file>
+        <file>media/n000.png</file>
+        <file>media/n100.png</file>
+        <file>media/n200.png</file>
+        <file>media/n210.png</file>
+        <file>media/n211.png</file>
+        <file>media/n212.png</file>
+        <file>media/n220.png</file>
+        <file>media/n221.png</file>
+        <file>media/n222.png</file>
+        <file>media/n240.png</file>
+        <file>media/n300.png</file>
+        <file>media/n310.png</file>
+        <file>media/n311.png</file>
+        <file>media/n312.png</file>
+        <file>media/n320.png</file>
+        <file>media/n321.png</file>
+        <file>media/n322.png</file>
+        <file>media/n340.png</file>
+        <file>media/n400.png</file>
+        <file>media/n410.png</file>
+        <file>media/n411.png</file>
+        <file>media/n412.png</file>
+        <file>media/n420.png</file>
+        <file>media/n421.png</file>
+        <file>media/n422.png</file>
+        <file>media/n430.png</file>
+        <file>media/n431.png</file>
+        <file>media/n432.png</file>
+        <file>media/n440.png</file>
+        <file>media/n500.png</file>
+        <file>media/n600.png</file>
     </qresource>
 </RCC>
