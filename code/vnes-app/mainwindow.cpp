@@ -105,6 +105,7 @@ void MainWindow::createChart(QString contentType, QString dataType, unordered_ma
             chart->setTitleFont(font);
             chart->setTitle("Road Condition");
             chart->setBackgroundBrush(weatherLogo);
+            chart->setAnimationOptions(QChart::AllAnimations);
 
             QChartView *chartView = new QChartView(chart);
             chartView->setRenderHint(QPainter::Antialiasing);
@@ -161,7 +162,8 @@ void MainWindow::createChart(QString contentType, QString dataType, unordered_ma
             QFont font;
             font.setPixelSize(36);
             chart->setTitleFont(font);
-            chart->setTitle("Temperature & Wind Speed");
+            chart->setTitle("Observed Temperature & Wind Speed");
+            chart->setAnimationOptions(QChart::AllAnimations);
             QChartView *chartView = new QChartView(chart);
             chartView->setRenderHint(QPainter::Antialiasing);
             chartView->resize(750, 520);
@@ -215,7 +217,8 @@ void MainWindow::createChart(QString contentType, QString dataType, unordered_ma
             QFont font;
             font.setPixelSize(36);
             chart->setTitleFont(font);
-            chart->setTitle("Temperature & Wind Speed");
+            chart->setTitle("Forecast Temperature & Wind Speed");
+            chart->setAnimationOptions(QChart::AllAnimations);
             QChartView *chartView = new QChartView(chart);
             chartView->setRenderHint(QPainter::Antialiasing);
             chartView->resize(750, 520);
