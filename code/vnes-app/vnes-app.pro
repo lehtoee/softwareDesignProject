@@ -5,13 +5,15 @@ CONFIG += qt
 QT += network core widgets
 
 SOURCES += \
-        apicalls.cpp \
+        controller.cpp \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+        networkhandler.cpp
 
 HEADERS += \
-    apicalls.hh \
-    mainwindow.h
+    controller.h \
+    mainwindow.h \
+    networkhandler.h
 
 FORMS += \
     mainwindow.ui

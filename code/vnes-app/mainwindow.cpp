@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <apicalls.hh>
+#include <networkhandler.h>
 #include <iostream>
 
 using namespace std;
@@ -9,9 +9,10 @@ int locationDropDownIndex;
 int timelineDropDownIndex;
 int dataTypeDropDownIndex;
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(Controller *controller, QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    controller_(controller)
 {
     ui->setupUi(this);
 
@@ -98,8 +99,8 @@ void MainWindow::setCombinedDataDropDowns()
 
 void MainWindow::onFetchDataButtonClicked()
 {
-    apiCalls api;
-    api.pullData("FMI");
+    std::vector<QString> j({"21","61","22","62"});
+    controller_->pushButtonClicked("Digitraffic", "traffic", j, "2022-01-19T10:06:38Z");
 }
 
 void MainWindow::on_trafficButton_clicked()
