@@ -9,6 +9,9 @@ Controller::Controller(NetworkHandler* networkhandler)
     std::unordered_map<QString, QString> digitrafficData;
     //timeNDate timeDate;
     //getTimeDate();
+    std::unordered_map<QString, QString> trafficmessages;
+    std::unordered_map<QString, QString> maintenance;
+    std::unordered_map<QString, QString> roadconditions;
 }
 
 Controller::~Controller()
@@ -29,6 +32,31 @@ void Controller::pushButtonClicked(QString source, QString datatype,
     QJsonObject jsonData = networkhandler_->getJsonData();
     //some async stuff would be needed here
     //parseDigitrafficData(jsonData, datatype);
+}
+
+std::unordered_map<QString, QString> Controller::getData(QString type)
+{
+    if(type=="trafficmessages"){
+        trafficmessages = {{"count", "5"}};
+        return trafficmessages;
+    }
+    else if(type=="roadconditions"){
+        roadconditions = {{{"precipitationCondition", "NO_RAIN_DRY_WEATHER"},
+                           {"winterSlipperiness", ""},
+                           {"overallRoadCondition", "NORMAL_CONDITION"},
+                           {"weatherSymbol", "n300"}
+                           }};
+        return roadconditions;
+    }
+    else if(type=="maintenance"){
+        maintenance = {{"task1", "LINE_SANDING"},
+                            {"task2", "ROAD_STATE_CHECKING"},
+                            {"task3", "ROAD_STATE_CHECKING"},
+                            {"task4", "BRUSHING"},
+                            {"task5", "CLEANSING_OF_BRIDGES"}};
+        return maintenance;
+    }
+    return digitrafficData;
 }
 
 void Controller::parseDigitrafficData(QJsonObject jsonData, QString datatype)

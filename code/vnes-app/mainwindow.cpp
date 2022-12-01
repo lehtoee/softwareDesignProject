@@ -136,6 +136,11 @@ void MainWindow::on_combinedButton_clicked()
 void MainWindow::on_locationDropDown_activated(int index)
 {
     locationDropDownIndex = index;
+    std::unordered_map<QString, QString> j = controller_->getData("roadconditions");
+    for(auto ele : j){
+                qDebug() << ele.second;
+            }
+
 }
 
 

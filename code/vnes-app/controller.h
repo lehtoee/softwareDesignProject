@@ -22,6 +22,7 @@ public:
                            std::vector<QString> coordinates, QString time);
     void parseDigitrafficData(QJsonObject jsonData, QString datatype);
     void parseFMIData(QString datatype);
+    std::unordered_map<QString, QString> getData(QString type);
     void getTimeDate();
 
 private:
@@ -36,6 +37,10 @@ private:
     } timeDate;
    std::unordered_map<QString, QString> digitrafficData;
 
+   //testimapit
+   std::unordered_map<QString, QString> trafficmessages;
+   std::unordered_map<QString, QString> maintenance;
+   std::unordered_map<QString, QString> roadconditions;
    // timeNDate timeDate;
 
 };
