@@ -8,6 +8,7 @@ Controller::Controller(NetworkHandler* networkhandler)
 {
     //timeNDate timeDate;
     //getTimeDate();
+    std::unordered_map<QString, QString> digitrafficData;
 }
 
 Controller::~Controller()
@@ -19,8 +20,9 @@ void Controller::pushButtonClicked(QString source, QString datatype,
                                    std::vector<QString> coordinates, QString time )
 {
     // Get the start and end time of
-    //std::tuple<QString, QString> startNendTime = parseTimeDate(time);
-    //qDebug() << get<0>(startNendTime) + " - " + get<1>(startNendTime);
+    std::tuple<QString, QString> startNendTime = parseTimeDate("2");
+    qDebug() << get<0>(startNendTime) + " - " + get<1>(startNendTime);
+    networkhandler_->fetchDataXML("weatherObserved", coordinates, startNendTime);
     //this->coordinates_ = coordinates;
 
     networkhandler_->fetchDataJson(source, datatype, coordinates, time);
@@ -31,7 +33,7 @@ void Controller::pushButtonClicked(QString source, QString datatype,
 
 void Controller::parseDigitrafficData(QJsonObject jsonData, QString datatype)
 {
-    std::unordered_map<QString, QString> digitrafficData;
+
     QJsonObject jsonData_ = networkhandler_->getJsonData();
     int timeTemp;
     if(datatype == "maintenance"){
@@ -139,7 +141,7 @@ void Controller::parseDigitrafficData(QJsonObject jsonData, QString datatype)
         auto iter = digitrafficData.find("count");
 
 
-        digitrafficData.insert({"count", QString::number(5)});
+        //digitrafficData.insert({"count", QString::number(5)});
 
         for(auto ele : digitrafficData){
             qDebug() << ele.second;

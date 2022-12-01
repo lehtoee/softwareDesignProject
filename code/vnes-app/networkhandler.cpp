@@ -56,9 +56,10 @@ QJsonObject NetworkHandler::getJsonData()
 void NetworkHandler::fetchDataXML(QString datatype, std::vector<QString> coordinates, std::tuple<QString, QString> time)
 {
     QString baseURL = "https://opendata.fmi.fi/wfs?request=getFeature&version=2.0.0&storedquery_id=fmi";
-    if(datatype == "weather"){
+    if(datatype == "weatherObserved"){
         QString URL = baseURL+"::observations::weather::hourly::simple&bbox=" + coordinates[0]+","+coordinates[2]+","+coordinates[1]+","+coordinates[3]+
                 "&starttime="+std::get<0>(time)+"&endtime="+std::get<1>(time)+"&timestep=30&parameters=t2m,ws_10min";
+        qDebug() << URL;
     }
     else if(datatype == "rainfall") {
 

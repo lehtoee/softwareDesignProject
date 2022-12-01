@@ -34,7 +34,7 @@ private:
         int month;
         int day;
     } timeDate;
-   //std::unordered_map<std::string, std::string> digitrafficData;
+   std::unordered_map<QString, QString> digitrafficData;
    //std::vector<QString> coordinates_;
    // timeNDate timeDate;
 
