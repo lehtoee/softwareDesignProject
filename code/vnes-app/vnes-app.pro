@@ -8,12 +8,14 @@ SOURCES += \
         controller.cpp \
         main.cpp \
         mainwindow.cpp \
-        networkhandler.cpp
+        networkhandler.cpp \
+        utils.cpp
 
 HEADERS += \
     controller.h \
     mainwindow.h \
-    networkhandler.h
+    networkhandler.h \
+    utils.h
 
 FORMS += \
     mainwindow.ui

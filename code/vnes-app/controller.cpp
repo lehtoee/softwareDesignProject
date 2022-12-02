@@ -20,9 +20,9 @@ void Controller::pushButtonClicked(QString source, QString datatype,
                                    std::vector<QString> coordinates, QString time )
 {
     // Get the start and end time of
-    std::tuple<QString, QString> startNendTime = parseTimeDate("2");
+    std::tuple<QString, QString> startNendTime = parseTimeDate("6");
     qDebug() << get<0>(startNendTime) + " - " + get<1>(startNendTime);
-    networkhandler_->fetchDataXML("weatherObserved", coordinates, startNendTime);
+    networkhandler_->fetchDataXML("weatherObserved", "Tampere", startNendTime);
     //this->coordinates_ = coordinates;
 
     networkhandler_->fetchDataJson(source, datatype, coordinates, time);
@@ -149,27 +149,12 @@ void Controller::parseDigitrafficData(QJsonObject jsonData, QString datatype)
     }
 }
 
-void Controller::parseFMIData(QString datatype)
-{
-
-}
-/*
-void Controller::getTimeDate()
-{
-    time_t currentTime = time(0);
-    tm *localTime = localtime(&currentTime);
-    timeDate.year = localTime->tm_year; //+ 1900;
-    timeDate.month = localTime->tm_mon; //+ 1;
-    timeDate.day = localTime->tm_mday;
-    timeDate.hour = localTime->tm_hour;
-    timeDate.minute = localTime->tm_min;
-}*/
-
 std::tuple<QString, QString> Controller::parseTimeDate(QString t)
 {
     char format [50];
     time_t currentTime = time(0);
     tm *localTime = localtime(&currentTime);
+    localTime->tm_hour -= 2;
     if (t == "2"){
 
         strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
