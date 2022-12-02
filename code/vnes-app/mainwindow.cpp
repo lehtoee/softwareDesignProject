@@ -17,6 +17,7 @@
 #include <QtCharts/QPieSlice>
 #include <QPushButton>
 #include <unordered_map>
+#include <QVBoxLayout>
 
 
 using namespace std;
@@ -227,6 +228,89 @@ void MainWindow::createChart(QString contentType, QString dataType, unordered_ma
 
     }else if(contentType == "combined")
     {
+        //Traffic maintenance
+        QPieSeries *series = new QPieSeries();
+        for(auto ele: data)
+        {
+            series->append(ele.second, 0.2);
+        }
+        for(int i = 0; i < series->slices().count(); i++)
+        {
+            QPieSlice *slice = series->slices().at(i);
+            slice->setLabelVisible(true);
+        }
+        QChart *chart = new QChart();
+        chart->addSeries(series);
+        QFont font;
+        font.setPixelSize(18);
+        chart->setTitleFont(font);
+        chart->setTitle("Road Maintenance");
+        chart->legend()->hide();
+        chart->setAnimationOptions(QChart::AllAnimations);
+
+
+        QChartView *chartView = new QChartView(chart);
+        chartView->setRenderHint(QPainter::Antialiasing);
+        chartView->resize(500, 300);
+
+        //Weather
+        QChart *chart1 = new QChart();
+        QValueAxis *axisX = new QValueAxis();
+        axisX->setTitleText("Time (h)");
+        axisX->setTickCount(7);
+        chart1->addAxis(axisX, Qt::AlignBottom);
+
+        QBarSeries *b_series = new QBarSeries();
+        vector<double> wind = weatherData["Windspeed"];
+        QBarSet *set = new QBarSet("Wind");
+        for(auto w: wind)
+        {
+            *set << w;
+        }
+        b_series->append(set);
+        chart1->addSeries(b_series);
+
+        QValueAxis *axisY2 = new QValueAxis;
+        axisY2->setMax(15);
+        axisY2->setMin(0);
+        axisY2->setTitleText("Wind (m/s)");
+        chart1->addAxis(axisY2, Qt::AlignRight);
+        b_series->attachAxis(axisX);
+        b_series->attachAxis(axisY2);
+
+        QLineSeries *l_series = new QLineSeries();
+        vector<double> temp = weatherData["Temperature"];
+        int i = 0;
+        for(auto t: temp)
+        {
+            l_series->append(i, t);
+            i++;
+        }
+        l_series->setName("Temperature");
+        chart1->addSeries(l_series);
+        QValueAxis *axisY = new QValueAxis;
+        axisY->setMax(10);
+        axisY->setMin(-10);
+        axisY->setTitleText("Temperature (C)");
+        chart1->addAxis(axisY, Qt::AlignLeft);
+        l_series->attachAxis(axisX);
+        l_series->attachAxis(axisY);
+
+        QFont font1;
+        font.setPixelSize(18);
+        chart1->setTitleFont(font);
+        chart1->setTitle("Observed Temperature & Wind Speed");
+        chart1->setAnimationOptions(QChart::AllAnimations);
+        QChartView *chartView1 = new QChartView(chart1);
+        chartView->setRenderHint(QPainter::Antialiasing);
+        chartView->resize(500, 300);
+
+        QWidget *window = new QWidget;
+        QVBoxLayout *layout = new QVBoxLayout(window);
+        layout->addWidget(chartView);
+        layout->addWidget(chartView1);
+        window->resize(1000, 600);
+        window->show();
 
     }
 
@@ -317,9 +401,9 @@ void MainWindow::onFetchDataButtonClicked()
 
     }else if(ui->dataLabel->text() == "Combined Data")
     {
-        unordered_map<QString, QString> j = controller_->getData("roadconditions");
+        unordered_map<QString, QString> j = controller_->getData("maintenance");
         unordered_map<QString, vector<double>> weather = {{"Temperature", {0.4, 0.4, 0.3, 0.3, 0.2, -0.2, -0.4}}, {"Windspeed", {3.6, 3.8, 3.8, 4.4, 4.5, 4.8, 4.2}}};
-        createChart("combined", "roadconditions", j, weather);
+        createChart("combined", "maintenance", j, weather);
     }
 
 }
