@@ -24,7 +24,8 @@ using namespace std;
 
 int locationDropDownIndex;
 int timelineDropDownIndex;
-int dataTypeDropDownIndex;
+int weatherDataTypeDropDownIndex;
+int trafficDataTypeDropDownIndex;
 
 MainWindow::MainWindow(Controller *controller, QWidget *parent) :
     QMainWindow(parent),
@@ -50,67 +51,190 @@ MainWindow::MainWindow(Controller *controller, QWidget *parent) :
     ui->trafficButton->setChecked(true);
     locationDropDownIndex = 0;
     timelineDropDownIndex = 0;
-    dataTypeDropDownIndex = 0;
+    weatherDataTypeDropDownIndex = 0;
+    traficDataTypeDropDownIndex = 0;
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+QChartView * MainWindow::createTrafficMaintanaceChart(unordered_map<QString, QString> data, int fontSize)
+{
+    QPieSeries *series = new QPieSeries();
+    for(auto ele: data)
+    {
+        series->append(ele.second, 0.2);
+    }
+    for(int i = 0; i < series->slices().count(); i++)
+    {
+        QPieSlice *slice = series->slices().at(i);
+        slice->setLabelVisible(true);
+    }
+    QChart *chart = new QChart();
+    chart->addSeries(series);
+    QFont font;
+    font.setPixelSize(fontSize);
+    chart->setTitleFont(font);
+    chart->setTitle("Road Maintenance");
+    chart->legend()->hide();
+    chart->setAnimationOptions(QChart::AllAnimations);
 
-void MainWindow::createChart(QString contentType, QString dataType, unordered_map<QString, QString> data, unordered_map<QString, vector<double>> weatherData)
+
+    QChartView *chartView = new QChartView(chart);
+    chartView->setRenderHint(QPainter::Antialiasing);
+    chartView->resize(750, 520);
+    return chartView;
+}
+
+QChartView * MainWindow::createTraffcRoadconditionsChart(unordered_map<QString, QString> data, int fontSize)
+{
+    QString symbol;
+    for(auto ele : data)
+    {
+        if(ele.first == "weatherSymbol")
+        {
+            symbol = ele.second;
+        }
+    }
+    QBrush weatherLogo = QImage(":/media/"+symbol+".png");
+    QChart *chart = new QChart();
+    QFont font;
+    font.setPixelSize(fontSize);
+    chart->setTitleFont(font);
+    chart->setTitle("Road Condition");
+    chart->setBackgroundBrush(weatherLogo);
+    chart->setAnimationOptions(QChart::AllAnimations);
+
+    QChartView *chartView = new QChartView(chart);
+    chartView->setRenderHint(QPainter::Antialiasing);
+    chartView->resize(750, 520);
+    return chartView;
+}
+
+QChartView * MainWindow::createWeatherObservedChart(unordered_map<QString, vector<double>> weatherData, int fontSize)
+{
+    QChart *chart = new QChart();
+    QValueAxis *axisX = new QValueAxis();
+    axisX->setTitleText("Time (h)");
+    axisX->setTickCount(7);
+    chart->addAxis(axisX, Qt::AlignBottom);
+
+    QBarSeries *b_series = new QBarSeries();
+    vector<double> wind = weatherData["Windspeed"];
+    QBarSet *set = new QBarSet("Wind");
+    for(auto w: wind)
+    {
+        *set << w;
+    }
+    b_series->append(set);
+    chart->addSeries(b_series);
+
+    QValueAxis *axisY2 = new QValueAxis;
+    axisY2->setMax(15);
+    axisY2->setMin(0);
+    axisY2->setTitleText("Wind (m/s)");
+    chart->addAxis(axisY2, Qt::AlignRight);
+    b_series->attachAxis(axisX);
+    b_series->attachAxis(axisY2);
+
+    QLineSeries *l_series = new QLineSeries();
+    vector<double> temp = weatherData["Temperature"];
+    int i = 0;
+    for(auto t: temp)
+    {
+        l_series->append(i, t);
+        i++;
+    }
+    l_series->setName("Temperature");
+    chart->addSeries(l_series);
+    QValueAxis *axisY = new QValueAxis;
+    axisY->setMax(10);
+    axisY->setMin(-10);
+    axisY->setTitleText("Temperature (C)");
+    chart->addAxis(axisY, Qt::AlignLeft);
+    l_series->attachAxis(axisX);
+    l_series->attachAxis(axisY);
+
+    QFont font;
+    font.setPixelSize(fontSize);
+    chart->setTitleFont(font);
+    chart->setTitle("Observed Temperature & Wind Speed");
+    chart->setAnimationOptions(QChart::AllAnimations);
+    QChartView *chartView = new QChartView(chart);
+    chartView->setRenderHint(QPainter::Antialiasing);
+    chartView->resize(750, 520);
+    return chartView;
+}
+
+QChartView * MainWindow::createWeatherForecastChart(unordered_map<QString, vector<double>> weatherData, int fontSize)
+{
+    QChart *chart = new QChart();
+    QValueAxis *axisX = new QValueAxis();
+    axisX->setTitleText("Time (h)");
+    axisX->setTickCount(7);
+    chart->addAxis(axisX, Qt::AlignBottom);
+
+    QBarSeries *b_series = new QBarSeries();
+    vector<double> wind = weatherData["Windspeed"];
+    QBarSet *set = new QBarSet("Wind");
+    for(auto w: wind)
+    {
+        *set << w;
+    }
+    b_series->append(set);
+    chart->addSeries(b_series);
+
+    QValueAxis *axisY2 = new QValueAxis;
+    axisY2->setMax(15);
+    axisY2->setMin(0);
+    axisY2->setTitleText("Wind (m/s)");
+    chart->addAxis(axisY2, Qt::AlignRight);
+    b_series->attachAxis(axisX);
+    b_series->attachAxis(axisY2);
+
+    QLineSeries *l_series = new QLineSeries();
+    vector<double> temp = weatherData["Temperature"];
+    int i = 0;
+    for(auto t: temp)
+    {
+        l_series->append(i, t);
+        i++;
+    }
+    l_series->setName("Temperature");
+    chart->addSeries(l_series);
+    QValueAxis *axisY = new QValueAxis;
+    axisY->setMax(10);
+    axisY->setMin(-10);
+    axisY->setTitleText("Temperature (C)");
+    chart->addAxis(axisY, Qt::AlignLeft);
+    l_series->attachAxis(axisX);
+    l_series->attachAxis(axisY);
+
+    QFont font;
+    font.setPixelSize(fontSize);
+    chart->setTitleFont(font);
+    chart->setTitle("Forecast Temperature & Wind Speed");
+    chart->setAnimationOptions(QChart::AllAnimations);
+    QChartView *chartView = new QChartView(chart);
+    chartView->setRenderHint(QPainter::Antialiasing);
+    chartView->resize(750, 520);
+    return chartView;
+}
+
+void MainWindow::createChart(QString contentType, QString dataType, unordered_map<QString, QString> data, unordered_map<QString, vector<double>> weatherData,
+                             QString traficDataType = "maintenance", QString weatherDataType = "observed")
 {
     if(contentType == "traffic")
     {
         if(dataType == "maintenance")
         {
-            QPieSeries *series = new QPieSeries();
-            for(auto ele: data)
-            {
-                series->append(ele.second, 0.2);
-            }
-            for(int i = 0; i < series->slices().count(); i++)
-            {
-                QPieSlice *slice = series->slices().at(i);
-                slice->setLabelVisible(true);
-            }
-            QChart *chart = new QChart();
-            chart->addSeries(series);
-            QFont font;
-            font.setPixelSize(36);
-            chart->setTitleFont(font);
-            chart->setTitle("Road Maintenance");
-            chart->legend()->hide();
-            chart->setAnimationOptions(QChart::AllAnimations);
-
-
-            QChartView *chartView = new QChartView(chart);
-            chartView->setRenderHint(QPainter::Antialiasing);
-            chartView->resize(750, 520);
+            QChartView *chartView = createTrafficMaintanaceChart(data, 36);
             chartView->show();
 
         }else if(dataType == "roadconditions")
         {
-            QString symbol;
-            for(auto ele : data)
-            {
-                if(ele.first == "weatherSymbol")
-                {
-                    symbol = ele.second;
-                }
-            }
-            QBrush weatherLogo = QImage(":/media/"+symbol+".png");
-            QChart *chart = new QChart();
-            QFont font;
-            font.setPixelSize(36);
-            chart->setTitleFont(font);
-            chart->setTitle("Road Condition");
-            chart->setBackgroundBrush(weatherLogo);
-            chart->setAnimationOptions(QChart::AllAnimations);
-
-            QChartView *chartView = new QChartView(chart);
-            chartView->setRenderHint(QPainter::Antialiasing);
-            chartView->resize(750, 520);
+            QChartView *chartView =createTraffcRoadconditionsChart(data, 36);
             chartView->show();
         }
 
@@ -118,192 +242,41 @@ void MainWindow::createChart(QString contentType, QString dataType, unordered_ma
     {
         if(dataType == "observed")
         {
-            QChart *chart = new QChart();
-            QValueAxis *axisX = new QValueAxis();
-            axisX->setTitleText("Time (h)");
-            axisX->setTickCount(7);
-            chart->addAxis(axisX, Qt::AlignBottom);
-
-            QBarSeries *b_series = new QBarSeries();
-            vector<double> wind = weatherData["Windspeed"];
-            QBarSet *set = new QBarSet("Wind");
-            for(auto w: wind)
-            {
-                *set << w;
-            }
-            b_series->append(set);
-            chart->addSeries(b_series);
-
-            QValueAxis *axisY2 = new QValueAxis;
-            axisY2->setMax(15);
-            axisY2->setMin(0);
-            axisY2->setTitleText("Wind (m/s)");
-            chart->addAxis(axisY2, Qt::AlignRight);
-            b_series->attachAxis(axisX);
-            b_series->attachAxis(axisY2);
-
-            QLineSeries *l_series = new QLineSeries();
-            vector<double> temp = weatherData["Temperature"];
-            int i = 0;
-            for(auto t: temp)
-            {
-                l_series->append(i, t);
-                i++;
-            }
-            l_series->setName("Temperature");
-            chart->addSeries(l_series);
-            QValueAxis *axisY = new QValueAxis;
-            axisY->setMax(10);
-            axisY->setMin(-10);
-            axisY->setTitleText("Temperature (C)");
-            chart->addAxis(axisY, Qt::AlignLeft);
-            l_series->attachAxis(axisX);
-            l_series->attachAxis(axisY);
-
-            QFont font;
-            font.setPixelSize(36);
-            chart->setTitleFont(font);
-            chart->setTitle("Observed Temperature & Wind Speed");
-            chart->setAnimationOptions(QChart::AllAnimations);
-            QChartView *chartView = new QChartView(chart);
-            chartView->setRenderHint(QPainter::Antialiasing);
-            chartView->resize(750, 520);
+            QChartView *chartView = createWeatherObservedChart(weatherData, 36);
             chartView->show();
 
 
         }else if(dataType == "forecast")
         {
-            QChart *chart = new QChart();
-            QValueAxis *axisX = new QValueAxis();
-            axisX->setTitleText("Time (h)");
-            axisX->setTickCount(7);
-            chart->addAxis(axisX, Qt::AlignBottom);
-
-            QBarSeries *b_series = new QBarSeries();
-            vector<double> wind = weatherData["Windspeed"];
-            QBarSet *set = new QBarSet("Wind");
-            for(auto w: wind)
-            {
-                *set << w;
-            }
-            b_series->append(set);
-            chart->addSeries(b_series);
-
-            QValueAxis *axisY2 = new QValueAxis;
-            axisY2->setMax(15);
-            axisY2->setMin(0);
-            axisY2->setTitleText("Wind (m/s)");
-            chart->addAxis(axisY2, Qt::AlignRight);
-            b_series->attachAxis(axisX);
-            b_series->attachAxis(axisY2);
-
-            QLineSeries *l_series = new QLineSeries();
-            vector<double> temp = weatherData["Temperature"];
-            int i = 0;
-            for(auto t: temp)
-            {
-                l_series->append(i, t);
-                i++;
-            }
-            l_series->setName("Temperature");
-            chart->addSeries(l_series);
-            QValueAxis *axisY = new QValueAxis;
-            axisY->setMax(10);
-            axisY->setMin(-10);
-            axisY->setTitleText("Temperature (C)");
-            chart->addAxis(axisY, Qt::AlignLeft);
-            l_series->attachAxis(axisX);
-            l_series->attachAxis(axisY);
-
-            QFont font;
-            font.setPixelSize(36);
-            chart->setTitleFont(font);
-            chart->setTitle("Forecast Temperature & Wind Speed");
-            chart->setAnimationOptions(QChart::AllAnimations);
-            QChartView *chartView = new QChartView(chart);
-            chartView->setRenderHint(QPainter::Antialiasing);
-            chartView->resize(750, 520);
+            QChartView *chartView = createWeatherForecastChart(weatherData, 36);
             chartView->show();
         }
 
     }else if(contentType == "combined")
     {
         //Traffic maintenance
-        QPieSeries *series = new QPieSeries();
-        for(auto ele: data)
+        QChartView *chartView;
+        if(traficDataType == "maintenance")
         {
-            series->append(ele.second, 0.2);
-        }
-        for(int i = 0; i < series->slices().count(); i++)
+            chartView = createTrafficMaintanaceChart(data, 18);
+
+        } else if(traficDataType == "roadconditions")
         {
-            QPieSlice *slice = series->slices().at(i);
-            slice->setLabelVisible(true);
-        }
-        QChart *chart = new QChart();
-        chart->addSeries(series);
-        QFont font;
-        font.setPixelSize(18);
-        chart->setTitleFont(font);
-        chart->setTitle("Road Maintenance");
-        chart->legend()->hide();
-        chart->setAnimationOptions(QChart::AllAnimations);
-
-
-        QChartView *chartView = new QChartView(chart);
-        chartView->setRenderHint(QPainter::Antialiasing);
+            chartView =createTraffcRoadconditionsChart(data, 18);
+        } else { return; }
         chartView->resize(500, 300);
 
         //Weather
-        QChart *chart1 = new QChart();
-        QValueAxis *axisX = new QValueAxis();
-        axisX->setTitleText("Time (h)");
-        axisX->setTickCount(7);
-        chart1->addAxis(axisX, Qt::AlignBottom);
-
-        QBarSeries *b_series = new QBarSeries();
-        vector<double> wind = weatherData["Windspeed"];
-        QBarSet *set = new QBarSet("Wind");
-        for(auto w: wind)
+        QChartView *chartView1;
+        if(weatherDataType == "observed")
         {
-            *set << w;
-        }
-        b_series->append(set);
-        chart1->addSeries(b_series);
+            chartView1 = createWeatherObservedChart(weatherData, 18);
 
-        QValueAxis *axisY2 = new QValueAxis;
-        axisY2->setMax(15);
-        axisY2->setMin(0);
-        axisY2->setTitleText("Wind (m/s)");
-        chart1->addAxis(axisY2, Qt::AlignRight);
-        b_series->attachAxis(axisX);
-        b_series->attachAxis(axisY2);
-
-        QLineSeries *l_series = new QLineSeries();
-        vector<double> temp = weatherData["Temperature"];
-        int i = 0;
-        for(auto t: temp)
+        } else if(weatherDataType == "forecast")
         {
-            l_series->append(i, t);
-            i++;
-        }
-        l_series->setName("Temperature");
-        chart1->addSeries(l_series);
-        QValueAxis *axisY = new QValueAxis;
-        axisY->setMax(10);
-        axisY->setMin(-10);
-        axisY->setTitleText("Temperature (C)");
-        chart1->addAxis(axisY, Qt::AlignLeft);
-        l_series->attachAxis(axisX);
-        l_series->attachAxis(axisY);
-
-        QFont font1;
-        font.setPixelSize(18);
-        chart1->setTitleFont(font);
-        chart1->setTitle("Observed Temperature & Wind Speed");
-        chart1->setAnimationOptions(QChart::AllAnimations);
-        QChartView *chartView1 = new QChartView(chart1);
-        chartView->setRenderHint(QPainter::Antialiasing);
-        chartView->resize(500, 300);
+            chartView1 = createWeatherForecastChart(weatherData, 18);
+        } else { return; }
+        chartView1->resize(500, 300);
 
         QWidget *window = new QWidget;
         QVBoxLayout *layout = new QVBoxLayout(window);
@@ -324,6 +297,7 @@ void MainWindow::setTimelineDropDown()
     ui->timelineDropDown->addItem("4 hours");
     ui->timelineDropDown->addItem("6 hours");
     ui->timelineDropDown->addItem("12 hours");
+    ui->timelineDropDown->setCurrentIndex(timelineDropDownIndex);
 }
 
 void MainWindow::setLocationDropDown()
@@ -335,6 +309,7 @@ void MainWindow::setLocationDropDown()
     ui->locationDropDown->addItem("Helsinki");
     ui->locationDropDown->addItem("Jyväskylä");
     ui->locationDropDown->addItem("Turku");
+    ui->locationDropDown->setCurrentIndex(locationDropDownIndex);
 }
 
 void MainWindow::setTrafficDataDropDowns()
@@ -345,6 +320,7 @@ void MainWindow::setTrafficDataDropDowns()
     ui->datatypeDropDown->clear();
     ui->datatypeDropDown->addItem("Road Maintenance");
     ui->datatypeDropDown->addItem("Road Condition Forecast");
+    ui->datatypeDropDown->setCurrentIndex(traficDataTypeDropDownIndex);
     ui->datatypeDropDown->show();
 }
 
@@ -356,6 +332,7 @@ void MainWindow::setWeatherDataDropDowns()
     ui->datatypeDropDown->clear();
     ui->datatypeDropDown->addItem("Observed Temperature & Wind");
     ui->datatypeDropDown->addItem("Predicted Temperature & Wind");
+    ui->datatypeDropDown->setCurrentIndex(weatherDataTypeDropDownIndex);
     ui->datatypeDropDown->show();
 }
 
@@ -403,9 +380,29 @@ void MainWindow::onFetchDataButtonClicked()
     {
         unordered_map<QString, QString> j = controller_->getData("maintenance");
         unordered_map<QString, vector<double>> weather = {{"Temperature", {0.4, 0.4, 0.3, 0.3, 0.2, -0.2, -0.4}}, {"Windspeed", {3.6, 3.8, 3.8, 4.4, 4.5, 4.8, 4.2}}};
-        createChart("combined", "maintenance", j, weather);
+        createChart("combined", "maintenance", j, weather, getTraficDataType(), getWeatherDataType());
     }
 
+}
+
+QString MainWindow::getWeatherDataType()
+{
+    if (weatherDataTypeDropDownIndex == 0) {
+        return "observed";
+    } else if (weatherDataTypeDropDownIndex == 1) {
+        return "forecast";
+    }
+    return NULL;
+}
+
+QString MainWindow::getTraficDataType()
+{
+    if (traficDataTypeDropDownIndex == 0) {
+        return "maintenance";
+    } else if (traficDataTypeDropDownIndex == 1) {
+        return "roadconditions";
+    }
+    return NULL;
 }
 
 void MainWindow::on_trafficButton_clicked()
@@ -457,6 +454,11 @@ void MainWindow::on_timelineDropDown_activated(int index)
 
 void MainWindow::on_datatypeDropDown_activated(int index)
 {
-    dataTypeDropDownIndex = index;
+    if (ui->trafficButton->isChecked()) {
+        traficDataTypeDropDownIndex = index;
+    } else {
+        weatherDataTypeDropDownIndex = index;
+    }
+
 }
 
