@@ -12,7 +12,6 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QComboBox>
-#include <QtWidgets/QGraphicsView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
@@ -33,7 +32,6 @@ public:
     QComboBox *timelineDropDown;
     QComboBox *datatypeDropDown;
     QLabel *dataLabel;
-    QGraphicsView *graphicsView;
     QPushButton *fetchDataButton;
     QPushButton *weatherButton;
     QPushButton *trafficButton;
@@ -45,7 +43,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName("MainWindow");
-        MainWindow->resize(863, 625);
+        MainWindow->resize(640, 706);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName("centralwidget");
         locationLabel = new QLabel(centralwidget);
@@ -78,10 +76,6 @@ public:
         QFont font1;
         font1.setPointSize(32);
         dataLabel->setFont(font1);
-        graphicsView = new QGraphicsView(centralwidget);
-        graphicsView->setObjectName("graphicsView");
-        graphicsView->setGeometry(QRect(540, 130, 300, 300));
-        graphicsView->setMaximumSize(QSize(300, 300));
         fetchDataButton = new QPushButton(centralwidget);
         fetchDataButton->setObjectName("fetchDataButton");
         fetchDataButton->setGeometry(QRect(20, 440, 200, 100));
@@ -110,7 +104,7 @@ public:
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName("menubar");
-        menubar->setGeometry(QRect(0, 0, 863, 20));
+        menubar->setGeometry(QRect(0, 0, 640, 21));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName("statusbar");

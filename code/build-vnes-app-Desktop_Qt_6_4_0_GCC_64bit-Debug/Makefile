@@ -14,10 +14,10 @@ EQ            = =
 
 CC            = gcc
 CXX           = g++
-DEFINES       = -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_QML_DEBUG
+DEFINES       = -DQT_CHARTS_LIB -DQT_OPENGLWIDGETS_LIB -DQT_WIDGETS_LIB -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_QML_DEBUG
 CFLAGS        = -pipe -g -fPIC -D_REENTRANT -Wall -Wextra $(DEFINES)
 CXXFLAGS      = -pipe -g -std=gnu++2a -fPIC -D_REENTRANT -Wall -Wextra $(DEFINES)
-INCPATH       = -I../vnes-app -I. -I/home/saha/Qt/6.4.0/gcc_64/include -I/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets -I/home/saha/Qt/6.4.0/gcc_64/include/QtGui -I/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork -I/home/saha/Qt/6.4.0/gcc_64/include/QtCore -I. -I. -I/home/saha/Qt/6.4.0/gcc_64/mkspecs/linux-g++
+INCPATH       = -I../vnes-app -I. -I/home/saha/Qt/6.4.0/gcc_64/include -I/home/saha/Qt/6.4.0/gcc_64/include/QtCharts -I/home/saha/Qt/6.4.0/gcc_64/include/QtOpenGLWidgets -I/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets -I/home/saha/Qt/6.4.0/gcc_64/include/QtOpenGL -I/home/saha/Qt/6.4.0/gcc_64/include/QtGui -I/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork -I/home/saha/Qt/6.4.0/gcc_64/include/QtCore -I. -I. -I/home/saha/Qt/6.4.0/gcc_64/mkspecs/linux-g++
 QMAKE         = /home/saha/Qt/6.4.0/gcc_64/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -40,7 +40,7 @@ DISTNAME      = vnes-app1.0.0
 DISTDIR = /home/saha/lipasto/SoftwareDesign/veikka-niklas-eemil-saha/code/build-vnes-app-Desktop_Qt_6_4_0_GCC_64bit-Debug/.tmp/vnes-app1.0.0
 LINK          = g++
 LFLAGS        = -Wl,-rpath,/home/saha/Qt/6.4.0/gcc_64/lib -Wl,-rpath-link,/home/saha/Qt/6.4.0/gcc_64/lib
-LIBS          = $(SUBLIBS) /home/saha/Qt/6.4.0/gcc_64/lib/libQt6Widgets.so /home/saha/Qt/6.4.0/gcc_64/lib/libQt6Gui.so /home/saha/Qt/6.4.0/gcc_64/lib/libQt6Network.so /home/saha/Qt/6.4.0/gcc_64/lib/libQt6Core.so -lpthread -lGL   
+LIBS          = $(SUBLIBS) /home/saha/Qt/6.4.0/gcc_64/lib/libQt6Charts.so -pthread /home/saha/Qt/6.4.0/gcc_64/lib/libQt6OpenGLWidgets.so /home/saha/Qt/6.4.0/gcc_64/lib/libQt6Widgets.so /home/saha/Qt/6.4.0/gcc_64/lib/libQt6OpenGL.so /home/saha/Qt/6.4.0/gcc_64/lib/libQt6Gui.so /home/saha/Qt/6.4.0/gcc_64/lib/libQt6Network.so /home/saha/Qt/6.4.0/gcc_64/lib/libQt6Core.so -lpthread -lGL   
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -52,17 +52,21 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = ../vnes-app/apicalls.cpp \
+SOURCES       = ../vnes-app/controller.cpp \
 		../vnes-app/main.cpp \
-		../vnes-app/mainwindow.cpp qrc_media.cpp \
-		moc_apicalls.cpp \
-		moc_mainwindow.cpp
-OBJECTS       = apicalls.o \
+		../vnes-app/mainwindow.cpp \
+		../vnes-app/networkhandler.cpp qrc_media.cpp \
+		moc_controller.cpp \
+		moc_mainwindow.cpp \
+		moc_networkhandler.cpp
+OBJECTS       = controller.o \
 		main.o \
 		mainwindow.o \
+		networkhandler.o \
 		qrc_media.o \
-		moc_apicalls.o \
-		moc_mainwindow.o
+		moc_controller.o \
+		moc_mainwindow.o \
+		moc_networkhandler.o
 DIST          = /home/saha/Qt/6.4.0/gcc_64/mkspecs/features/spec_pre.prf \
 		/home/saha/Qt/6.4.0/gcc_64/mkspecs/common/unix.conf \
 		/home/saha/Qt/6.4.0/gcc_64/mkspecs/common/linux.conf \
@@ -322,6 +326,7 @@ DIST          = /home/saha/Qt/6.4.0/gcc_64/mkspecs/features/spec_pre.prf \
 		/home/saha/Qt/6.4.0/gcc_64/mkspecs/features/qt_config.prf \
 		/home/saha/Qt/6.4.0/gcc_64/mkspecs/linux-g++/qmake.conf \
 		/home/saha/Qt/6.4.0/gcc_64/mkspecs/features/spec_post.prf \
+		../vnes-app/.qmake.stash \
 		/home/saha/Qt/6.4.0/gcc_64/mkspecs/features/exclusive_builds.prf \
 		/home/saha/Qt/6.4.0/gcc_64/mkspecs/features/toolchain.prf \
 		/home/saha/Qt/6.4.0/gcc_64/mkspecs/features/default_pre.prf \
@@ -342,10 +347,12 @@ DIST          = /home/saha/Qt/6.4.0/gcc_64/mkspecs/features/spec_pre.prf \
 		/home/saha/Qt/6.4.0/gcc_64/mkspecs/features/exceptions.prf \
 		/home/saha/Qt/6.4.0/gcc_64/mkspecs/features/yacc.prf \
 		/home/saha/Qt/6.4.0/gcc_64/mkspecs/features/lex.prf \
-		../vnes-app/vnes-app.pro ../vnes-app/apicalls.hh \
-		../vnes-app/mainwindow.h ../vnes-app/apicalls.cpp \
+		../vnes-app/vnes-app.pro ../vnes-app/controller.h \
+		../vnes-app/mainwindow.h \
+		../vnes-app/networkhandler.h ../vnes-app/controller.cpp \
 		../vnes-app/main.cpp \
-		../vnes-app/mainwindow.cpp
+		../vnes-app/mainwindow.cpp \
+		../vnes-app/networkhandler.cpp
 QMAKE_TARGET  = vnes-app
 DESTDIR       = 
 TARGET        = vnes-app
@@ -616,6 +623,7 @@ Makefile: ../vnes-app/vnes-app.pro /home/saha/Qt/6.4.0/gcc_64/mkspecs/linux-g++/
 		/home/saha/Qt/6.4.0/gcc_64/mkspecs/features/qt_config.prf \
 		/home/saha/Qt/6.4.0/gcc_64/mkspecs/linux-g++/qmake.conf \
 		/home/saha/Qt/6.4.0/gcc_64/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/home/saha/Qt/6.4.0/gcc_64/mkspecs/features/exclusive_builds.prf \
 		/home/saha/Qt/6.4.0/gcc_64/mkspecs/features/toolchain.prf \
 		/home/saha/Qt/6.4.0/gcc_64/mkspecs/features/default_pre.prf \
@@ -638,7 +646,10 @@ Makefile: ../vnes-app/vnes-app.pro /home/saha/Qt/6.4.0/gcc_64/mkspecs/linux-g++/
 		/home/saha/Qt/6.4.0/gcc_64/mkspecs/features/lex.prf \
 		../vnes-app/vnes-app.pro \
 		../vnes-app/media.qrc \
+		/home/saha/Qt/6.4.0/gcc_64/lib/libQt6Charts.prl \
+		/home/saha/Qt/6.4.0/gcc_64/lib/libQt6OpenGLWidgets.prl \
 		/home/saha/Qt/6.4.0/gcc_64/lib/libQt6Widgets.prl \
+		/home/saha/Qt/6.4.0/gcc_64/lib/libQt6OpenGL.prl \
 		/home/saha/Qt/6.4.0/gcc_64/lib/libQt6Gui.prl \
 		/home/saha/Qt/6.4.0/gcc_64/lib/libQt6Network.prl \
 		/home/saha/Qt/6.4.0/gcc_64/lib/libQt6Core.prl
@@ -902,6 +913,7 @@ Makefile: ../vnes-app/vnes-app.pro /home/saha/Qt/6.4.0/gcc_64/mkspecs/linux-g++/
 /home/saha/Qt/6.4.0/gcc_64/mkspecs/features/qt_config.prf:
 /home/saha/Qt/6.4.0/gcc_64/mkspecs/linux-g++/qmake.conf:
 /home/saha/Qt/6.4.0/gcc_64/mkspecs/features/spec_post.prf:
+.qmake.stash:
 /home/saha/Qt/6.4.0/gcc_64/mkspecs/features/exclusive_builds.prf:
 /home/saha/Qt/6.4.0/gcc_64/mkspecs/features/toolchain.prf:
 /home/saha/Qt/6.4.0/gcc_64/mkspecs/features/default_pre.prf:
@@ -924,7 +936,10 @@ Makefile: ../vnes-app/vnes-app.pro /home/saha/Qt/6.4.0/gcc_64/mkspecs/linux-g++/
 /home/saha/Qt/6.4.0/gcc_64/mkspecs/features/lex.prf:
 ../vnes-app/vnes-app.pro:
 ../vnes-app/media.qrc:
+/home/saha/Qt/6.4.0/gcc_64/lib/libQt6Charts.prl:
+/home/saha/Qt/6.4.0/gcc_64/lib/libQt6OpenGLWidgets.prl:
 /home/saha/Qt/6.4.0/gcc_64/lib/libQt6Widgets.prl:
+/home/saha/Qt/6.4.0/gcc_64/lib/libQt6OpenGL.prl:
 /home/saha/Qt/6.4.0/gcc_64/lib/libQt6Gui.prl:
 /home/saha/Qt/6.4.0/gcc_64/lib/libQt6Network.prl:
 /home/saha/Qt/6.4.0/gcc_64/lib/libQt6Core.prl:
@@ -944,8 +959,8 @@ distdir: FORCE
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents ../vnes-app/media.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents /home/saha/Qt/6.4.0/gcc_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../vnes-app/apicalls.hh ../vnes-app/mainwindow.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../vnes-app/apicalls.cpp ../vnes-app/main.cpp ../vnes-app/mainwindow.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../vnes-app/controller.h ../vnes-app/mainwindow.h ../vnes-app/networkhandler.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../vnes-app/controller.cpp ../vnes-app/main.cpp ../vnes-app/mainwindow.cpp ../vnes-app/networkhandler.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../vnes-app/mainwindow.ui $(DISTDIR)/
 
 
@@ -975,10 +990,72 @@ compiler_rcc_clean:
 	-$(DEL_FILE) qrc_media.cpp
 qrc_media.cpp: ../vnes-app/media.qrc \
 		/home/saha/Qt/6.4.0/gcc_64/libexec/rcc \
-		../vnes-app/media/combinedData.png \
+		../vnes-app/media/n321.png \
+		../vnes-app/media/n312.png \
+		../vnes-app/media/n440.png \
+		../vnes-app/media/d240.png \
+		../vnes-app/media/n240.png \
+		../vnes-app/media/n320.png \
+		../vnes-app/media/d430.png \
+		../vnes-app/media/d212.png \
+		../vnes-app/media/d310.png \
+		../vnes-app/media/d211.png \
+		../vnes-app/media/d400.png \
+		../vnes-app/media/n311.png \
 		../vnes-app/media/cloud.png \
+		../vnes-app/media/d300.png \
+		../vnes-app/media/n431.png \
+		../vnes-app/media/n432.png \
+		../vnes-app/media/d000.png \
+		../vnes-app/media/d311.png \
+		../vnes-app/media/n500.png \
+		../vnes-app/media/n411.png \
+		../vnes-app/media/n000.png \
+		../vnes-app/media/d222.png \
+		../vnes-app/media/d432.png \
+		../vnes-app/media/d210.png \
+		../vnes-app/media/d600.png \
+		../vnes-app/media/d340.png \
+		../vnes-app/media/n200.png \
+		../vnes-app/media/n322.png \
+		../vnes-app/media/n340.png \
+		../vnes-app/media/d420.png \
+		../vnes-app/media/n420.png \
+		../vnes-app/media/n221.png \
+		../vnes-app/media/n422.png \
+		../vnes-app/media/n300.png \
+		../vnes-app/media/d440.png \
+		../vnes-app/media/d312.png \
+		../vnes-app/media/n410.png \
+		../vnes-app/media/d200.png \
+		../vnes-app/media/d320.png \
+		../vnes-app/media/n212.png \
+		../vnes-app/media/d431.png \
+		../vnes-app/media/n210.png \
+		../vnes-app/media/d221.png \
+		../vnes-app/media/n222.png \
+		../vnes-app/media/combinedData.png \
+		../vnes-app/media/n400.png \
+		../vnes-app/media/n430.png \
+		../vnes-app/media/d100.png \
+		../vnes-app/media/d422.png \
+		../vnes-app/media/n100.png \
+		../vnes-app/media/n412.png \
 		../vnes-app/media/traffic.png \
-		../vnes-app/media/fetchData.png
+		../vnes-app/media/d220.png \
+		../vnes-app/media/fetchData.png \
+		../vnes-app/media/n600.png \
+		../vnes-app/media/d321.png \
+		../vnes-app/media/d412.png \
+		../vnes-app/media/n220.png \
+		../vnes-app/media/d411.png \
+		../vnes-app/media/n421.png \
+		../vnes-app/media/d421.png \
+		../vnes-app/media/d322.png \
+		../vnes-app/media/n310.png \
+		../vnes-app/media/d500.png \
+		../vnes-app/media/n211.png \
+		../vnes-app/media/d410.png
 	/home/saha/Qt/6.4.0/gcc_64/libexec/rcc -name media --no-zstd ../vnes-app/media.qrc -o qrc_media.cpp
 
 compiler_moc_predefs_make_all: moc_predefs.h
@@ -987,10 +1064,11 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /home/saha/Qt/6.4.0/gcc_64/mkspecs/features/data/dummy.cpp
 	g++ -pipe -g -std=gnu++2a -fPIC -dM -E -o moc_predefs.h /home/saha/Qt/6.4.0/gcc_64/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_apicalls.cpp moc_mainwindow.cpp
+compiler_moc_header_make_all: moc_controller.cpp moc_mainwindow.cpp moc_networkhandler.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_apicalls.cpp moc_mainwindow.cpp
-moc_apicalls.cpp: ../vnes-app/apicalls.hh \
+	-$(DEL_FILE) moc_controller.cpp moc_mainwindow.cpp moc_networkhandler.cpp
+moc_controller.cpp: ../vnes-app/controller.h \
+		../vnes-app/networkhandler.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QNetworkAccessManager \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qnetworkaccessmanager.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qtnetworkglobal.h \
@@ -1104,62 +1182,25 @@ moc_apicalls.cpp: ../vnes-app/apicalls.hh \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QSslPreSharedKeyAuthenticator \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qsslpresharedkeyauthenticator.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QMetaType \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/QApplication \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qapplication.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qtguiglobal.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qtgui-config.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qtguiexports.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qtwidgets-config.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qtwidgetsexports.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcoreapplication.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qeventloop.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qnativeinterface.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcoreapplication_platform.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjnitypes.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qfuture.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qfutureinterface.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qmutex.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qtsan_impl.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qresultstore.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qfuture_impl.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qthreadpool.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qthread.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qdeadlinetimer.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qelapsedtimer.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qrunnable.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qexception.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qpointer.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qpromise.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qwindowdefs.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qwindowdefs_win.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qpoint.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qsize.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qmargins.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qcursor.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qbitmap.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qpixmap.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qpaintdevice.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qrect.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qcolor.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qrgb.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qrgba64.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qimage.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qpixelformat.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qtransform.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qpolygon.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qregion.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qline.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qguiapplication.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qinputmethod.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qguiapplication_platform.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QNetworkReply \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qnetworkreply.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QIODevice \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QNetworkRequest \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjsonobject.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjsonvalue.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcborvalue.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcborcommon.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qregularexpression.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/quuid.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjsondocument.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QFile \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qfile.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qfiledevice.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QJsonArray \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjsonarray.h \
 		moc_predefs.h \
 		/home/saha/Qt/6.4.0/gcc_64/libexec/moc
-	/home/saha/Qt/6.4.0/gcc_64/libexec/moc $(DEFINES) --include /home/saha/lipasto/SoftwareDesign/veikka-niklas-eemil-saha/code/build-vnes-app-Desktop_Qt_6_4_0_GCC_64bit-Debug/moc_predefs.h -I/home/saha/Qt/6.4.0/gcc_64/mkspecs/linux-g++ -I/home/saha/lipasto/SoftwareDesign/veikka-niklas-eemil-saha/code/vnes-app -I/home/saha/Qt/6.4.0/gcc_64/include -I/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets -I/home/saha/Qt/6.4.0/gcc_64/include/QtGui -I/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork -I/home/saha/Qt/6.4.0/gcc_64/include/QtCore -I. -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../vnes-app/apicalls.hh -o moc_apicalls.cpp
+	/home/saha/Qt/6.4.0/gcc_64/libexec/moc $(DEFINES) --include /home/saha/lipasto/SoftwareDesign/veikka-niklas-eemil-saha/code/build-vnes-app-Desktop_Qt_6_4_0_GCC_64bit-Debug/moc_predefs.h -I/home/saha/Qt/6.4.0/gcc_64/mkspecs/linux-g++ -I/home/saha/lipasto/SoftwareDesign/veikka-niklas-eemil-saha/code/vnes-app -I/home/saha/Qt/6.4.0/gcc_64/include -I/home/saha/Qt/6.4.0/gcc_64/include/QtCharts -I/home/saha/Qt/6.4.0/gcc_64/include/QtOpenGLWidgets -I/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets -I/home/saha/Qt/6.4.0/gcc_64/include/QtOpenGL -I/home/saha/Qt/6.4.0/gcc_64/include/QtGui -I/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork -I/home/saha/Qt/6.4.0/gcc_64/include/QtCore -I. -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../vnes-app/controller.h -o moc_controller.cpp
 
 moc_mainwindow.cpp: ../vnes-app/mainwindow.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/QMainWindow \
@@ -1299,9 +1340,240 @@ moc_mainwindow.cpp: ../vnes-app/mainwindow.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/QTransform \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qnativeinterface.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qtabwidget.h \
+		../vnes-app/controller.h \
+		../vnes-app/networkhandler.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QNetworkAccessManager \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qnetworkaccessmanager.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qtnetworkglobal.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qtnetwork-config.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qtnetworkexports.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qnetworkrequest.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QSharedDataPointer \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QString \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QUrl \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QVariant \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QSslConfiguration \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qsslconfiguration.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qsslsocket.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qtcpsocket.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qabstractsocket.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qhostaddress.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qsslerror.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qsslcertificate.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcryptographichash.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qdatetime.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcalendar.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qlocale.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qssl.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QFlags \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QSslPreSharedKeyAuthenticator \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qsslpresharedkeyauthenticator.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QMetaType \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QNetworkReply \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qnetworkreply.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QIODevice \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QNetworkRequest \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjsonobject.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjsonvalue.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcborvalue.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcborcommon.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qregularexpression.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/quuid.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjsondocument.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QFile \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qfile.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qfiledevice.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QJsonArray \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjsonarray.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QChartView \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qchartview.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QAbstractAxis \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qabstractaxis.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QChartGlobal \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qchartglobal.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qtcharts-config.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qtchartsexports.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/QPen \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qpen.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/QFont \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QAbstractSeries \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qabstractseries.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QChart \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qchart.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QLegend \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qlegend.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/QGraphicsWidget \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qgraphicswidget.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qgraphicslayoutitem.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qgraphicsitem.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qpainterpath.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/QBrush \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QMargins \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/QGraphicsView \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qgraphicsview.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qpainter.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qtextoption.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qscrollarea.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qframe.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qgraphicsscene.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QBarSet \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qbarset.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QBarSeries \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qbarseries.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QAbstractBarSeries \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qabstractbarseries.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QStringList \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QBarCategoryAxis \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qbarcategoryaxis.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QLineSeries \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qlineseries.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QXYSeries \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qxyseries.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/QImage \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QCategoryAxis \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qcategoryaxis.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QValueAxis \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qvalueaxis.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QPieSeries \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qpieseries.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QPieSlice \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qpieslice.h \
 		moc_predefs.h \
 		/home/saha/Qt/6.4.0/gcc_64/libexec/moc
-	/home/saha/Qt/6.4.0/gcc_64/libexec/moc $(DEFINES) --include /home/saha/lipasto/SoftwareDesign/veikka-niklas-eemil-saha/code/build-vnes-app-Desktop_Qt_6_4_0_GCC_64bit-Debug/moc_predefs.h -I/home/saha/Qt/6.4.0/gcc_64/mkspecs/linux-g++ -I/home/saha/lipasto/SoftwareDesign/veikka-niklas-eemil-saha/code/vnes-app -I/home/saha/Qt/6.4.0/gcc_64/include -I/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets -I/home/saha/Qt/6.4.0/gcc_64/include/QtGui -I/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork -I/home/saha/Qt/6.4.0/gcc_64/include/QtCore -I. -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../vnes-app/mainwindow.h -o moc_mainwindow.cpp
+	/home/saha/Qt/6.4.0/gcc_64/libexec/moc $(DEFINES) --include /home/saha/lipasto/SoftwareDesign/veikka-niklas-eemil-saha/code/build-vnes-app-Desktop_Qt_6_4_0_GCC_64bit-Debug/moc_predefs.h -I/home/saha/Qt/6.4.0/gcc_64/mkspecs/linux-g++ -I/home/saha/lipasto/SoftwareDesign/veikka-niklas-eemil-saha/code/vnes-app -I/home/saha/Qt/6.4.0/gcc_64/include -I/home/saha/Qt/6.4.0/gcc_64/include/QtCharts -I/home/saha/Qt/6.4.0/gcc_64/include/QtOpenGLWidgets -I/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets -I/home/saha/Qt/6.4.0/gcc_64/include/QtOpenGL -I/home/saha/Qt/6.4.0/gcc_64/include/QtGui -I/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork -I/home/saha/Qt/6.4.0/gcc_64/include/QtCore -I. -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../vnes-app/mainwindow.h -o moc_mainwindow.cpp
+
+moc_networkhandler.cpp: ../vnes-app/networkhandler.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QNetworkAccessManager \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qnetworkaccessmanager.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qtnetworkglobal.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qglobal.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qconfig-bootstrapped.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qconfig.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qtcore-config.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qtconfigmacros.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qtcoreexports.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qsystemdetection.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qprocessordetection.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcompilerdetection.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qtypeinfo.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcontainerfwd.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qsysinfo.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qlogging.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qflags.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcompare_impl.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qatomic.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qbasicatomic.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qgenericatomic.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qglobalstatic.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qnumeric.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qversiontagging.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qforeach.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qtnetwork-config.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qtnetworkexports.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qnetworkrequest.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QSharedDataPointer \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qshareddata.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qhashfunctions.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qstring.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qchar.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qstringview.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qbytearray.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qrefcount.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qnamespace.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qtmetamacros.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qarraydata.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qpair.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qarraydatapointer.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qarraydataops.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcontainertools_impl.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qbytearrayalgorithms.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qbytearrayview.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qstringfwd.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qstringliteral.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qstringalgorithms.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qanystringview.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qutf8stringview.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qstringtokenizer.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qstringbuilder.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QString \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QUrl \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qurl.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qobjectdefs.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qlist.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qiterator.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qbytearraylist.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qstringlist.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qalgorithms.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qstringmatcher.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QVariant \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qvariant.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qmetatype.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcompare.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qscopeguard.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qdatastream.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qscopedpointer.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qiodevicebase.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qiterable.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qmetacontainer.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcontainerinfo.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qtaggedpointer.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qmath.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qdebug.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qtextstream.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qstringconverter_base.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcontiguouscache.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qsharedpointer.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qmap.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qshareddata_impl.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qset.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qhash.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qvarlengtharray.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qobject.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcoreevent.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qobject_impl.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qbindingstorage.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QList \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QObject \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QSslConfiguration \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qsslconfiguration.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qsslsocket.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qtcpsocket.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qabstractsocket.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qhostaddress.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qiodevice.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qsslerror.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qsslcertificate.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcryptographichash.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qdatetime.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcalendar.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qlocale.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qssl.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QFlags \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QSslPreSharedKeyAuthenticator \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qsslpresharedkeyauthenticator.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QMetaType \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QNetworkReply \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qnetworkreply.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QIODevice \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QNetworkRequest \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjsonobject.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjsonvalue.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcborvalue.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcborcommon.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qregularexpression.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/quuid.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjsondocument.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QFile \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qfile.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qfiledevice.h \
+		moc_predefs.h \
+		/home/saha/Qt/6.4.0/gcc_64/libexec/moc
+	/home/saha/Qt/6.4.0/gcc_64/libexec/moc $(DEFINES) --include /home/saha/lipasto/SoftwareDesign/veikka-niklas-eemil-saha/code/build-vnes-app-Desktop_Qt_6_4_0_GCC_64bit-Debug/moc_predefs.h -I/home/saha/Qt/6.4.0/gcc_64/mkspecs/linux-g++ -I/home/saha/lipasto/SoftwareDesign/veikka-niklas-eemil-saha/code/vnes-app -I/home/saha/Qt/6.4.0/gcc_64/include -I/home/saha/Qt/6.4.0/gcc_64/include/QtCharts -I/home/saha/Qt/6.4.0/gcc_64/include/QtOpenGLWidgets -I/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets -I/home/saha/Qt/6.4.0/gcc_64/include/QtOpenGL -I/home/saha/Qt/6.4.0/gcc_64/include/QtGui -I/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork -I/home/saha/Qt/6.4.0/gcc_64/include/QtCore -I. -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../vnes-app/networkhandler.h -o moc_networkhandler.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -1324,7 +1596,8 @@ compiler_clean: compiler_rcc_clean compiler_moc_predefs_clean compiler_moc_heade
 
 ####### Compile
 
-apicalls.o: ../vnes-app/apicalls.cpp ../vnes-app/apicalls.hh \
+controller.o: ../vnes-app/controller.cpp ../vnes-app/controller.h \
+		../vnes-app/networkhandler.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QNetworkAccessManager \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qnetworkaccessmanager.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qtnetworkglobal.h \
@@ -1438,81 +1711,29 @@ apicalls.o: ../vnes-app/apicalls.cpp ../vnes-app/apicalls.hh \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QSslPreSharedKeyAuthenticator \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qsslpresharedkeyauthenticator.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QMetaType \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/QApplication \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qapplication.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qtguiglobal.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qtgui-config.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qtguiexports.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qtwidgets-config.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qtwidgetsexports.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcoreapplication.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qeventloop.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qnativeinterface.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcoreapplication_platform.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjnitypes.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qfuture.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qfutureinterface.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qmutex.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qtsan_impl.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qresultstore.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qfuture_impl.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qthreadpool.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qthread.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qdeadlinetimer.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qelapsedtimer.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qrunnable.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qexception.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qpointer.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qpromise.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qwindowdefs.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qwindowdefs_win.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qpoint.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qsize.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qmargins.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qcursor.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qbitmap.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qpixmap.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qpaintdevice.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qrect.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qcolor.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qrgb.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qrgba64.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qimage.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qpixelformat.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qtransform.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qpolygon.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qregion.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qline.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qguiapplication.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qinputmethod.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qguiapplication_platform.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QNetworkReply \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qnetworkreply.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QIODevice \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QNetworkRequest \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QFile \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qfile.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qfiledevice.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QDebug \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QJsonDocument \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjsondocument.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjsonobject.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjsonvalue.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcborvalue.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcborcommon.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qregularexpression.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/quuid.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QJsonObject \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjsonobject.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjsondocument.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QFile \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qfile.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qfiledevice.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QJsonArray \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjsonarray.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QEventLoop
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o apicalls.o ../vnes-app/apicalls.cpp
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjsonarray.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o controller.o ../vnes-app/controller.cpp
 
-main.o: ../vnes-app/main.cpp ../vnes-app/apicalls.hh \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QNetworkAccessManager \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qnetworkaccessmanager.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qtnetworkglobal.h \
+main.o: ../vnes-app/main.cpp ../vnes-app/mainwindow.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/QMainWindow \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qmainwindow.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qtguiglobal.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qglobal.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qconfig-bootstrapped.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qconfig.h \
@@ -1537,19 +1758,23 @@ main.o: ../vnes-app/main.cpp ../vnes-app/apicalls.hh \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qnumeric.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qversiontagging.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qforeach.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qtnetwork-config.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qtnetworkexports.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qnetworkrequest.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QSharedDataPointer \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qshareddata.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qhashfunctions.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qtgui-config.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qtguiexports.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qtwidgets-config.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qtwidgetsexports.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qwidget.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qwindowdefs.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qobjectdefs.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qnamespace.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qtmetamacros.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qwindowdefs_win.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qobject.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qstring.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qchar.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qstringview.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qbytearray.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qrefcount.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qnamespace.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qtmetamacros.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qarraydata.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qpair.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qarraydatapointer.h \
@@ -1564,143 +1789,205 @@ main.o: ../vnes-app/main.cpp ../vnes-app/apicalls.hh \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qutf8stringview.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qstringtokenizer.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qstringbuilder.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QString \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QUrl \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qurl.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qobjectdefs.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qobjectdefs_impl.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qlist.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qhashfunctions.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qiterator.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qbytearraylist.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qstringlist.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qalgorithms.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qstringmatcher.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QVariant \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qvariant.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcoreevent.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qscopedpointer.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qmetatype.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcompare.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qscopeguard.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qdatastream.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qscopedpointer.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qiodevicebase.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qiterable.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qmetacontainer.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcontainerinfo.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qtaggedpointer.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qmath.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qdebug.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qtextstream.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qstringconverter_base.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcontiguouscache.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qsharedpointer.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qsharedpointer_impl.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qmap.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qshareddata_impl.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qset.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qhash.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qvarlengtharray.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qobject.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcoreevent.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qobject_impl.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qbindingstorage.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QList \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QObject \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QSslConfiguration \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qsslconfiguration.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qsslsocket.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qtcpsocket.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qabstractsocket.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qhostaddress.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qiodevice.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qsslerror.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qsslcertificate.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcryptographichash.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qdatetime.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcalendar.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qlocale.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qssl.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QFlags \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QSslPreSharedKeyAuthenticator \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qsslpresharedkeyauthenticator.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QMetaType \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/QApplication \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qapplication.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qtguiglobal.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qtgui-config.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qtguiexports.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qtwidgets-config.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qtwidgetsexports.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcoreapplication.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qeventloop.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qnativeinterface.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcoreapplication_platform.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjnitypes.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qfuture.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qfutureinterface.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qmutex.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qtsan_impl.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qresultstore.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qfuture_impl.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qthreadpool.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qthread.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qdeadlinetimer.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qelapsedtimer.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qrunnable.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qexception.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qpointer.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qpromise.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qwindowdefs.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qwindowdefs_win.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qpoint.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qsize.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qmargins.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qcursor.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qbitmap.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qaction.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qkeysequence.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qicon.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qsize.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qpixmap.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qpaintdevice.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qrect.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qpoint.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qcolor.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qrgb.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qrgba64.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qsharedpointer.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qshareddata.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qsharedpointer_impl.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qimage.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qpixelformat.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qtransform.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qpolygon.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qregion.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qline.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qguiapplication.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qinputmethod.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qguiapplication_platform.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QNetworkReply \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qnetworkreply.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QIODevice \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QNetworkRequest \
-		../vnes-app/mainwindow.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/QMainWindow \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qmainwindow.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qwidget.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qaction.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qkeysequence.h \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qicon.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qvariant.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qdebug.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qtextstream.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qstringconverter_base.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcontiguouscache.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qmap.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qshareddata_impl.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qset.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qhash.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qvarlengtharray.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qpalette.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qbrush.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qfont.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qfontmetrics.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qfontinfo.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qsizepolicy.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qcursor.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qbitmap.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qevent.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qiodevice.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qpointer.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qurl.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qeventpoint.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qvector2d.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qvectornd.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qpointingdevice.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qinputdevice.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qscreen.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QList \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QObject \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QRect \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QSize \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QSizeF \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/QTransform \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qtabwidget.h
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qnativeinterface.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qtabwidget.h \
+		../vnes-app/controller.h \
+		../vnes-app/networkhandler.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QNetworkAccessManager \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qnetworkaccessmanager.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qtnetworkglobal.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qtnetwork-config.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qtnetworkexports.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qnetworkrequest.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QSharedDataPointer \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QString \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QUrl \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QVariant \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QSslConfiguration \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qsslconfiguration.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qsslsocket.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qtcpsocket.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qabstractsocket.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qhostaddress.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qsslerror.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qsslcertificate.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcryptographichash.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qdatetime.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcalendar.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qlocale.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qssl.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QFlags \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QSslPreSharedKeyAuthenticator \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qsslpresharedkeyauthenticator.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QMetaType \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QNetworkReply \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qnetworkreply.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QIODevice \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QNetworkRequest \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjsonobject.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjsonvalue.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcborvalue.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcborcommon.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qregularexpression.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/quuid.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjsondocument.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QFile \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qfile.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qfiledevice.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QJsonArray \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjsonarray.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QChartView \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qchartview.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QAbstractAxis \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qabstractaxis.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QChartGlobal \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qchartglobal.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qtcharts-config.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qtchartsexports.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/QPen \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qpen.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/QFont \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QAbstractSeries \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qabstractseries.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QChart \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qchart.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QLegend \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qlegend.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/QGraphicsWidget \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qgraphicswidget.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qgraphicslayoutitem.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qgraphicsitem.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qpainterpath.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/QBrush \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QMargins \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/QGraphicsView \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qgraphicsview.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qpainter.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qtextoption.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qscrollarea.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qframe.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qgraphicsscene.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QBarSet \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qbarset.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QBarSeries \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qbarseries.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QAbstractBarSeries \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qabstractbarseries.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QStringList \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QBarCategoryAxis \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qbarcategoryaxis.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QLineSeries \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qlineseries.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QXYSeries \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qxyseries.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/QImage \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QCategoryAxis \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qcategoryaxis.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QValueAxis \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qvalueaxis.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QPieSeries \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qpieseries.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QPieSlice \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qpieslice.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/QApplication \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qapplication.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcoreapplication.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qeventloop.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcoreapplication_platform.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjnitypes.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qfuture.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qfutureinterface.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qmutex.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qtsan_impl.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qresultstore.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qfuture_impl.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qthreadpool.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qthread.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qdeadlinetimer.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qelapsedtimer.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qrunnable.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qexception.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qpromise.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qguiapplication.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qinputmethod.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qguiapplication_platform.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../vnes-app/main.cpp
 
 mainwindow.o: ../vnes-app/mainwindow.cpp ../vnes-app/mainwindow.h \
@@ -1841,8 +2128,8 @@ mainwindow.o: ../vnes-app/mainwindow.cpp ../vnes-app/mainwindow.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/QTransform \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qnativeinterface.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qtabwidget.h \
-		ui_mainwindow.h \
-		../vnes-app/apicalls.hh \
+		../vnes-app/controller.h \
+		../vnes-app/networkhandler.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QNetworkAccessManager \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qnetworkaccessmanager.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qtnetworkglobal.h \
@@ -1870,6 +2157,77 @@ mainwindow.o: ../vnes-app/mainwindow.cpp ../vnes-app/mainwindow.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QSslPreSharedKeyAuthenticator \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qsslpresharedkeyauthenticator.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QMetaType \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QNetworkReply \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qnetworkreply.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QIODevice \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QNetworkRequest \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjsonobject.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjsonvalue.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcborvalue.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcborcommon.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qregularexpression.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/quuid.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjsondocument.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QFile \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qfile.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qfiledevice.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QJsonArray \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjsonarray.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QChartView \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qchartview.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QAbstractAxis \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qabstractaxis.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QChartGlobal \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qchartglobal.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qtcharts-config.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qtchartsexports.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/QPen \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qpen.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/QFont \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QAbstractSeries \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qabstractseries.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QChart \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qchart.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QLegend \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qlegend.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/QGraphicsWidget \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qgraphicswidget.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qgraphicslayoutitem.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qgraphicsitem.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qpainterpath.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/QBrush \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QMargins \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/QGraphicsView \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qgraphicsview.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qpainter.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qtextoption.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qscrollarea.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qframe.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qgraphicsscene.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QBarSet \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qbarset.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QBarSeries \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qbarseries.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QAbstractBarSeries \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qabstractbarseries.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QStringList \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QBarCategoryAxis \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qbarcategoryaxis.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QLineSeries \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qlineseries.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QXYSeries \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qxyseries.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/QImage \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QCategoryAxis \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qcategoryaxis.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QValueAxis \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qvalueaxis.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QPieSeries \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qpieseries.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/QPieSlice \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCharts/qpieslice.h \
+		ui_mainwindow.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/QApplication \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qapplication.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcoreapplication.h \
@@ -1892,20 +2250,181 @@ mainwindow.o: ../vnes-app/mainwindow.cpp ../vnes-app/mainwindow.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qguiapplication.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qinputmethod.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qguiapplication_platform.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/QComboBox \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qcombobox.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qstyleoption.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qabstractspinbox.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qvalidator.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qslider.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qabstractslider.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qstyle.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qtabbar.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qrubberband.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qabstractitemmodel.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/QLabel \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qlabel.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qpicture.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtGui/qtextdocument.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/QMenuBar \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qmenubar.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qmenu.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/QPushButton \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qpushbutton.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qabstractbutton.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/QStatusBar \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qstatusbar.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/QWidget \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/QVBoxLayout \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qboxlayout.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qlayout.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qlayoutitem.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtWidgets/qgridlayout.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../vnes-app/mainwindow.cpp
+
+networkhandler.o: ../vnes-app/networkhandler.cpp ../vnes-app/networkhandler.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QNetworkAccessManager \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qnetworkaccessmanager.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qtnetworkglobal.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qglobal.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qconfig-bootstrapped.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qconfig.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qtcore-config.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qtconfigmacros.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qtcoreexports.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qsystemdetection.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qprocessordetection.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcompilerdetection.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qtypeinfo.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcontainerfwd.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qsysinfo.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qlogging.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qflags.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcompare_impl.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qatomic.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qbasicatomic.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qgenericatomic.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qglobalstatic.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qnumeric.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qversiontagging.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qforeach.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qtnetwork-config.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qtnetworkexports.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qnetworkrequest.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QSharedDataPointer \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qshareddata.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qhashfunctions.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qstring.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qchar.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qstringview.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qbytearray.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qrefcount.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qnamespace.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qtmetamacros.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qarraydata.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qpair.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qarraydatapointer.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qarraydataops.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcontainertools_impl.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qbytearrayalgorithms.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qbytearrayview.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qstringfwd.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qstringliteral.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qstringalgorithms.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qanystringview.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qutf8stringview.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qstringtokenizer.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qstringbuilder.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QString \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QUrl \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qurl.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qobjectdefs.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qlist.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qiterator.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qbytearraylist.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qstringlist.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qalgorithms.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qstringmatcher.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QVariant \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qvariant.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qmetatype.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcompare.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qscopeguard.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qdatastream.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qscopedpointer.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qiodevicebase.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qiterable.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qmetacontainer.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcontainerinfo.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qtaggedpointer.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qmath.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qdebug.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qtextstream.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qstringconverter_base.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcontiguouscache.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qsharedpointer.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qmap.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qshareddata_impl.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qset.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qhash.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qvarlengtharray.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qobject.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcoreevent.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qobject_impl.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qbindingstorage.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QList \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QObject \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QSslConfiguration \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qsslconfiguration.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qsslsocket.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qtcpsocket.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qabstractsocket.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qhostaddress.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qiodevice.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qsslerror.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qsslcertificate.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcryptographichash.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qdatetime.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcalendar.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qlocale.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qssl.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QFlags \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QSslPreSharedKeyAuthenticator \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qsslpresharedkeyauthenticator.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QMetaType \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QNetworkReply \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/qnetworkreply.h \
 		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QIODevice \
-		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QNetworkRequest
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../vnes-app/mainwindow.cpp
+		/home/saha/Qt/6.4.0/gcc_64/include/QtNetwork/QNetworkRequest \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjsonobject.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjsonvalue.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcborvalue.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qcborcommon.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qregularexpression.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/quuid.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjsondocument.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QFile \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qfile.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qfiledevice.h \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/QJsonArray \
+		/home/saha/Qt/6.4.0/gcc_64/include/QtCore/qjsonarray.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o networkhandler.o ../vnes-app/networkhandler.cpp
 
 qrc_media.o: qrc_media.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_media.o qrc_media.cpp
 
-moc_apicalls.o: moc_apicalls.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_apicalls.o moc_apicalls.cpp
+moc_controller.o: moc_controller.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_controller.o moc_controller.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
+
+moc_networkhandler.o: moc_networkhandler.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_networkhandler.o moc_networkhandler.cpp
 
 ####### Install
 

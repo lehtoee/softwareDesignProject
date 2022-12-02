@@ -3,7 +3,7 @@
 #include <sstream>
 
 NetworkHandler::NetworkHandler(QObject *parent):
- QObject{parent}
+    QObject{parent}
 {
     utils *utilities = new utils;
 }
@@ -35,7 +35,7 @@ void NetworkHandler::fetchDataJson(QString source, QString datatype,
         }
         else if(datatype == "trafficmessages"){
             myurl= myurl + "traffic-message/v1/messages?inactiveHours="
-                           "&includeAreaGeometry=false&situationType=";
+                            "&includeAreaGeometry=false&situationType=";
         }
         const QUrl url = QUrl(myurl);
         QNetworkRequest request(url);
