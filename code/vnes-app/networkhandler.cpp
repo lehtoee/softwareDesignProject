@@ -5,6 +5,7 @@
 NetworkHandler::NetworkHandler(QObject *parent):
     QObject{parent}
 {
+    utils *utilities = new utils;
 }
 
 void NetworkHandler::fetchDataJson(QString source, QString datatype,
@@ -53,18 +54,6 @@ QJsonObject NetworkHandler::getJsonData()
     return jsonData_;
 }
 
-void NetworkHandler::fetchDataXML(QString datatype, std::vector<QString> coordinates, std::tuple<QString, QString> time)
-{
-    QString baseURL = "https://opendata.fmi.fi/wfs?request=getFeature&version=2.0.0&storedquery_id=fmi";
-    if(datatype == "weatherObserved"){
-        QString URL = baseURL+"::observations::weather::hourly::simple&bbox=" + coordinates[0]+","+coordinates[2]+","+coordinates[1]+","+coordinates[3]+
-                      "&starttime="+std::get<0>(time)+"&endtime="+std::get<1>(time)+"&timestep=30&parameters=t2m,ws_10min";
-        qDebug() << URL;
-    }
-    else if(datatype == "rainfall") {
-
-    }
-}
 
 void NetworkHandler::jsonFetchFinished(QNetworkReply *reply)
 {
@@ -85,3 +74,48 @@ void NetworkHandler::jsonFetchFinished(QNetworkReply *reply)
     qDebug() << jsonData_;
     reply->deleteLater();
 }
+
+
+
+void NetworkHandler::fetchDataXML(QString datatype, QString location, std::tuple<QString, QString> time)
+{
+    QNetworkAccessManager *xmlmanager = new QNetworkAccessManager(this);
+    connect(xmlmanager, &QNetworkAccessManager::finished, this, &NetworkHandler::XMLFetchFinished);
+
+    QString GeoID = utilities->getGeoID(location);
+    QString baseURL = "https://opendata.fmi.fi/wfs?request=getFeature&version=2.0.0&storedquery_id=fmi";
+    QString URLstring;
+
+    if(datatype == "weatherObserved"){
+        URLstring = baseURL+"::observations::weather::hourly::simple&geoid="+GeoID+
+                "&starttime="+std::get<0>(time)+"&endtime="+std::get<1>(time)+"&timestep=30&parameters=t2m,ws_10min";
+        qDebug() << URLstring;
+    }
+    else if(datatype == "weatherForecast") {
+        URLstring = baseURL+"::forecast::harmonie::surface::point::simple&geoid="+GeoID+
+                "&starttime="+std::get<0>(time)+"&endtime="+std::get<1>(time)+"&timestep=30&parameters=temperature,windspeedms";
+        qDebug()<<URLstring;
+    }
+    else {
+        URLstring = "";
+    }
+    const QUrl url = QUrl(URLstring);
+    QNetworkRequest request(url);
+    xmlmanager->get(request);
+}
+
+void NetworkHandler::XMLFetchFinished(QNetworkReply *reply)
+{
+    if(reply->error()){
+        qDebug() << "error";
+        qDebug() << reply->errorString();
+        return;
+    }
+    qDebug() << "XML Fetch ok";
+    QByteArray byteArrayContent = reply->readAll();
+    QString content = QString(byteArrayContent);
+    std::unordered_map<QString, std::vector<double>> FMIdata = utilities->parseXML(content);
+    qDebug() << "tänne";
+}
+
+
