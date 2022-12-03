@@ -41,11 +41,16 @@ std::unordered_map<QString, QString> Controller::getData(QString type)
         return trafficmessages;
     }
     else if(type=="roadconditions"){
-        roadconditions = {{{"precipitationCondition", "NO_RAIN_DRY_WEATHER"},
+        roadconditions = {{"precipitationCondition", "NO_RAIN_DRY_WEATHER"},
             {"winterSlipperiness", ""},
             {"overallRoadCondition", "NORMAL_CONDITION"},
-            {"weatherSymbol", "n300"}
-        }};
+            {"weatherSymbol", "n300"},
+          {"roadCondition", "DRY"},
+          {"roadTemperature", "+17"},
+          {"temperature", "+13"},
+          {"windSpeed", "2.0"},
+          {"windDirection", "45"}
+        };
         return roadconditions;
     }
     else if(type=="maintenance"){
