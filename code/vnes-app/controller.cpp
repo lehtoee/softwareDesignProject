@@ -26,7 +26,6 @@ void Controller::pushButtonClicked(QString source, QString datatype,
     std::tuple<QString, QString> startNendTime = parseTimeDate("6");
     qDebug() << get<0>(startNendTime) + " - " + get<1>(startNendTime);
     networkhandler_->fetchDataXML("weatherObserved", "Tampere", startNendTime);
-    //this->coordinates_ = coordinates;
 
     networkhandler_->fetchDataJson(source, datatype, coordinates, time);
     QJsonObject jsonData = networkhandler_->getJsonData();
@@ -96,24 +95,36 @@ void Controller::parseDigitrafficData(QJsonObject jsonData, QString datatype)
         }
 
         QString precipitationCondition = roadConditions[forecast].toObject()
-
-                                             .value("forecastConditionReason").toObject()
-                                             .value("precipitationCondition").toString();
+             .value("forecastConditionReason").toObject()
+             .value("precipitationCondition").toString();
         QString winterSlipperiness = roadConditions[forecast].toObject()
-                                         .value("forecastConditionReason").toObject()
-                                         .value("winterSlipperiness").toString();
-        /*QString roadCondition = roadConditions[forecast].toObject()
-                .value("forecastConditionReason").toObject()
-                .value("roadCondition").toString();*/
+             .value("forecastConditionReason").toObject()
+             .value("winterSlipperiness").toString();
+        QString roadCondition = roadConditions[forecast].toObject()
+             .value("forecastConditionReason").toObject()
+             .value("roadCondition").toString();
         QString overallRoadCondition = roadConditions[forecast].toObject()
-                                           .value("overallRoadCondition").toString();
+             .value("overallRoadCondition").toString();
+        QString roadTemperature = roadConditions[forecast].toObject()
+             .value("roadTemperature").toString();
+        QString temperature = roadConditions[forecast].toObject()
+             .value("temperature").toString();
+        QString windSpeed = roadConditions[forecast].toObject()
+             .value("windSpeed").toString();
+        QString windDirection = roadConditions[forecast].toObject()
+             .value("windDirection").toString();
         QString weatherSymbol = roadConditions[forecast].toObject()
-                                    .value("weatherSymbol").toString();
+             .value("weatherSymbol").toString();
 
         digitrafficData.insert({{"precipitationCondition", precipitationCondition},
             {"winterSlipperiness", winterSlipperiness},
             {"overallRoadCondition", overallRoadCondition},
-            {"weatherSymbol", weatherSymbol}
+            {"weatherSymbol", weatherSymbol},
+            {"roadCondition", roadCondition},
+            {"roadTemperature", roadTemperature},
+            {"temperature", temperature},
+            {"windSpeed", windSpeed},
+            {"windDirection", windDirection}
         });
 
 
