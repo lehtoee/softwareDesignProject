@@ -19,7 +19,7 @@ public:
     ~Controller();
 
     void pushButtonClicked(QString source, QString datatype,
-                           std::vector<QString> coordinates, QString time);
+                           QString location, QString time);
     void parseDigitrafficData(QJsonObject jsonData, QString datatype);
     void parseFMIData(QString datatype);
     std::unordered_map<QString, QString> getData(QString type);

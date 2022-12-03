@@ -8,27 +8,30 @@ NetworkHandler::NetworkHandler(QObject *parent):
     utils *utilities = new utils;
 }
 
-void NetworkHandler::fetchDataJson(QString source, QString datatype,
-                                   std::vector<QString> coordinates, QString time)
+void NetworkHandler::fetchDataJson(QString datatype, QString location, QString time)
 {
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
     connect(manager, &QNetworkAccessManager::finished, this, &NetworkHandler::jsonFetchFinished);
+
+    datatype_ = datatype;
+    coordinates_ = utilities->getCoordinates(location);
+    time_ = time;
 
     QString myurl = "https://tie.digitraffic.fi/api/";
     if(datatype == "maintenance"){
         QString qstrtime = time;
         myurl = myurl + "maintenance/v1/tracking/routes?endFrom="
                 + "2022-01-19T09%3A00%3A00Z" + "&endBefore=" + "2022-01-19T10%3A00%3A00Z" + "&xMin="
-                + coordinates[0] + "&yMin=" + coordinates[1] + "&xMax="
-                + coordinates[2] + "&yMax=" + coordinates[3]
+                + coordinates_[0] + "&yMin=" + coordinates_[1] + "&xMax="
+                + coordinates_[2] + "&yMax=" + coordinates_[3]
                 + "&taskId=&domain=state-roads";
 
     }
     else if(datatype == "roadconditions"){
 
-        myurl = myurl + "v3/data/road-conditions/" + coordinates[0] + "/"
-                + coordinates[1] + "/" + coordinates[2] + "/"
-                + coordinates[3];
+        myurl = myurl + "v3/data/road-conditions/" + coordinates_[0] + "/"
+                + coordinates_[1] + "/" + coordinates_[2] + "/"
+                + coordinates_[3];
     }
     else if(datatype == "trafficmessages"){
         myurl= myurl + "traffic-message/v1/messages?inactiveHours="
@@ -58,11 +61,9 @@ void NetworkHandler::jsonFetchFinished(QNetworkReply *reply)
     //convert to Json object
     QByteArray input = reply->readAll();
     QJsonDocument document = QJsonDocument::fromJson(input);
-    QJsonObject obj = document.object();
-    jsonData_ = obj;
-    // Tähän joku emit jonka controller sitte pick uppaa että tän jsonData_ muuttujan saa tallennettuu johki
-    qDebug() << jsonData_;
-    reply->deleteLater();
+    QJsonObject jsonObj = document.object();
+    std::unordered_map<QString, QString> digitrafficData = utilities->parseJson(jsonObj, datatype_, coordinates_, time_);
+
 }
 
 
