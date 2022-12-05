@@ -22,8 +22,7 @@ class NetworkHandler : public QObject
 public:
     NetworkHandler(QObject* parent = nullptr);
 
-    void fetchDataJson(QString source, QString datatype,
-                       std::vector<QString> coordinates, QString time);
+    void fetchDataJson(QString datatype, QString location, QString time);
     QJsonObject getJsonData();
     void fetchDataXML(QString datatype, QString location, std::tuple<QString, QString> time);
 
@@ -36,6 +35,9 @@ private:
     //QString myurl = "https://tie.digitraffic.fi/api/v3/data/road-conditions/21/61/22/62";
     QJsonObject jsonData_;
     utils *utilities;
+    QString datatype_;
+    std::vector<QString> coordinates_;
+    QString time_;
 
 };
 

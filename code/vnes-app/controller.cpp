@@ -20,15 +20,14 @@ Controller::~Controller()
 }
 
 void Controller::pushButtonClicked(QString source, QString datatype,
-                                   std::vector<QString> coordinates, QString time )
+                                   QString location, QString time )
 {
     // Get the start and end time of
     std::tuple<QString, QString> startNendTime = parseTimeDate("6");
     qDebug() << get<0>(startNendTime) + " - " + get<1>(startNendTime);
     networkhandler_->fetchDataXML("weatherObserved", "Tampere", startNendTime);
-    //this->coordinates_ = coordinates;
 
-    networkhandler_->fetchDataJson(source, datatype, coordinates, time);
+    networkhandler_->fetchDataJson(datatype, location, time);
     QJsonObject jsonData = networkhandler_->getJsonData();
     //some async stuff would be needed here
     //parseDigitrafficData(jsonData, datatype);
@@ -42,11 +41,16 @@ std::unordered_map<QString, QString> Controller::getData(QString type)
         return trafficmessages;
     }
     else if(type=="roadconditions"){
-        roadconditions = {{{"precipitationCondition", "NO_RAIN_DRY_WEATHER"},
+        roadconditions = {{"precipitationCondition", "NO_RAIN_DRY_WEATHER"},
             {"winterSlipperiness", ""},
             {"overallRoadCondition", "NORMAL_CONDITION"},
-            {"weatherSymbol", "n300"}
-        }};
+            {"weatherSymbol", "n300"},
+          {"roadCondition", "DRY"},
+          {"roadTemperature", "+17"},
+          {"temperature", "+13"},
+          {"windSpeed", "2.0"},
+          {"windDirection", "45"}
+        };
         return roadconditions;
     }
     else if(type=="maintenance"){
@@ -60,103 +64,6 @@ std::unordered_map<QString, QString> Controller::getData(QString type)
     return digitrafficData;
 }
 
-void Controller::parseDigitrafficData(QJsonObject jsonData, QString datatype)
-{
-    std::vector<QString> coordinates({"22","60","28","62"});
-
-    digitrafficData.clear();
-    int timeTemp;
-    if(datatype == "maintenance"){
-        QJsonArray maintenanceFeatures = jsonData["features"].toArray();
-        int counter = 1;
-        for(auto ele : maintenanceFeatures){
-            QString task = ele.toObject().value("properties")
-                               .toObject().value("tasks")[0].toString();
-            digitrafficData.insert({"task" + QString::number(counter), task});
-            counter++;
-        }
-    }
-    else if(datatype == "roadconditions"){
-        QJsonArray weatherData = jsonData["weatherData"].toArray();
-
-        QJsonArray roadConditions = weatherData[0].toObject()
-                                        .value("roadConditions").toArray();
-        int forecast = 1;
-        if(timeTemp == 2){
-            forecast = 1;
-        }
-        else if(timeTemp == 4){
-            forecast = 2;
-        }
-        else if(timeTemp == 6){
-            forecast = 3;
-        }
-        else if(timeTemp == 12){
-            forecast = 4;
-        }
-
-        QString precipitationCondition = roadConditions[forecast].toObject()
-
-                                             .value("forecastConditionReason").toObject()
-                                             .value("precipitationCondition").toString();
-        QString winterSlipperiness = roadConditions[forecast].toObject()
-                                         .value("forecastConditionReason").toObject()
-                                         .value("winterSlipperiness").toString();
-        /*QString roadCondition = roadConditions[forecast].toObject()
-                .value("forecastConditionReason").toObject()
-                .value("roadCondition").toString();*/
-        QString overallRoadCondition = roadConditions[forecast].toObject()
-                                           .value("overallRoadCondition").toString();
-        QString weatherSymbol = roadConditions[forecast].toObject()
-                                    .value("weatherSymbol").toString();
-
-        digitrafficData.insert({{"precipitationCondition", precipitationCondition},
-            {"winterSlipperiness", winterSlipperiness},
-            {"overallRoadCondition", overallRoadCondition},
-            {"weatherSymbol", weatherSymbol}
-        });
-
-
-    }
-    else if(datatype == "trafficmessages"){
-
-        QJsonArray features = jsonData["features"].toArray();
-
-        int count = 0;
-        for(auto ele : features){
-            QString type = ele.toObject().value("geometry")
-                               .toObject().value("type").toString();
-            QJsonArray coords = ele.toObject().value("geometry")
-                                    .toObject().value("coordinates").toArray();
-
-            if(type == "Point"){
-                if(coords[0].toDouble() > coordinates[0].toDouble()
-                    && coords[0].toDouble() < coordinates[2].toDouble()
-                    && coords[1].toDouble() > coordinates[1].toDouble()
-                    && coords[1].toDouble() < coordinates[3].toDouble())
-                {
-                    count++;
-                }
-
-            }
-            else if(type=="MultiLineString"){
-                QJsonArray multiCoord = coords[0].toArray()[0].toArray();
-                if(multiCoord[0].toDouble() > coordinates[0].toDouble()
-                    && multiCoord[0].toDouble() < coordinates[2].toDouble()
-                    && multiCoord[1].toDouble() > coordinates[1].toDouble()
-                    && multiCoord[1].toDouble() < coordinates[3].toDouble())
-                {
-                    count++;
-                }
-            }
-
-        }
-
-        QString stringCount = "count";
-
-        digitrafficData.insert({stringCount, QString::number(count)});
-    }
-}
 
 
 std::tuple<QString, QString> Controller::parseTimeDate(QString t)

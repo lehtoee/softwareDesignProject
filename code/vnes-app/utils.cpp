@@ -46,6 +46,114 @@ QString utils::getGeoID(QString location)
     }
 }
 
+std::unordered_map<QString, QString> utils::parseJson(QJsonObject jsonData, QString datatype, std::vector<QString> coordinates, QString time)
+{
+    std::unordered_map<QString, QString> digitrafficData;
+
+    if(datatype == "maintenance"){
+        QJsonArray maintenanceFeatures = jsonData["features"].toArray();
+        int counter = 1;
+        for(auto ele : maintenanceFeatures){
+            QString task = ele.toObject().value("properties")
+                               .toObject().value("tasks")[0].toString();
+            digitrafficData.insert({"task" + QString::number(counter), task});
+            counter++;
+        }
+    }
+    else if(datatype == "roadconditions"){
+        QJsonArray weatherData = jsonData["weatherData"].toArray();
+
+        QJsonArray roadConditions = weatherData[0].toObject()
+                                        .value("roadConditions").toArray();
+        int forecast = 1;
+        if(time == "4"){
+            forecast = 2;
+        }
+        else if(time == "6"){
+            forecast = 3;
+        }
+        else if(time == "12"){
+            forecast = 4;
+        }
+
+        QString precipitationCondition = roadConditions[forecast].toObject()
+             .value("forecastConditionReason").toObject()
+             .value("precipitationCondition").toString();
+        QString winterSlipperiness = roadConditions[forecast].toObject()
+             .value("forecastConditionReason").toObject()
+             .value("winterSlipperiness").toString();
+        QString roadCondition = roadConditions[forecast].toObject()
+             .value("forecastConditionReason").toObject()
+             .value("roadCondition").toString();
+        QString overallRoadCondition = roadConditions[forecast].toObject()
+             .value("overallRoadCondition").toString();
+        QString roadTemperature = roadConditions[forecast].toObject()
+             .value("roadTemperature").toString();
+        QString temperature = roadConditions[forecast].toObject()
+             .value("temperature").toString();
+        QString windSpeed = roadConditions[forecast].toObject()
+             .value("windSpeed").toString();
+        QString windDirection = roadConditions[forecast].toObject()
+             .value("windDirection").toString();
+        QString weatherSymbol = roadConditions[forecast].toObject()
+             .value("weatherSymbol").toString();
+
+        digitrafficData.insert({{"precipitationCondition", precipitationCondition},
+            {"winterSlipperiness", winterSlipperiness},
+            {"overallRoadCondition", overallRoadCondition},
+            {"weatherSymbol", weatherSymbol},
+            {"roadCondition", roadCondition},
+            {"roadTemperature", roadTemperature},
+            {"temperature", temperature},
+            {"windSpeed", windSpeed},
+            {"windDirection", windDirection}
+        });
+
+
+    }
+    else if(datatype == "trafficmessages"){
+
+        QJsonArray features = jsonData["features"].toArray();
+
+        int count = 0;
+        for(auto ele : features){
+            QString type = ele.toObject().value("geometry")
+                               .toObject().value("type").toString();
+            QJsonArray coords = ele.toObject().value("geometry")
+                                    .toObject().value("coordinates").toArray();
+
+            if(type == "Point"){
+                if(coords[0].toDouble() > coordinates[0].toDouble()
+                    && coords[0].toDouble() < coordinates[2].toDouble()
+                    && coords[1].toDouble() > coordinates[1].toDouble()
+                    && coords[1].toDouble() < coordinates[3].toDouble())
+                {
+                    count++;
+                }
+
+            }
+            else if(type=="MultiLineString"){
+                QJsonArray multiCoord = coords[0].toArray()[0].toArray();
+                if(multiCoord[0].toDouble() > coordinates[0].toDouble()
+                    && multiCoord[0].toDouble() < coordinates[2].toDouble()
+                    && multiCoord[1].toDouble() > coordinates[1].toDouble()
+                    && multiCoord[1].toDouble() < coordinates[3].toDouble())
+                {
+                    count++;
+                }
+            }
+
+        }
+
+        QString stringCount = "count";
+
+        digitrafficData.insert({stringCount, QString::number(count)});
+    }
+
+    return digitrafficData;
+}
+
+
 std::unordered_map<QString, std::vector<double> > utils::parseXML(QString content)
 {
     // Parses XML document from FMI api to values which are used with graphs
