@@ -34,7 +34,7 @@ struct qt_meta_stringdata_MainWindow_t {
     char stringdata3[31];
     char stringdata4[38];
     char stringdata5[25];
-    char stringdata6[25];
+    char stringdata6[24];
     char stringdata7[25];
     char stringdata8[26];
     char stringdata9[20];
@@ -57,18 +57,18 @@ Q_CONSTINIT static const qt_meta_stringdata_MainWindow_t qt_meta_stringdata_Main
         QT_MOC_LITERAL(24, 30),  // "unordered_map<QString,QString>"
         QT_MOC_LITERAL(55, 37),  // "unordered_map<QString,vector<..."
         QT_MOC_LITERAL(93, 24),  // "onFetchDataButtonClicked"
-        QT_MOC_LITERAL(118, 24),  // "on_trafficButton_clicked"
-        QT_MOC_LITERAL(143, 24),  // "on_weatherButton_clicked"
-        QT_MOC_LITERAL(168, 25),  // "on_combinedButton_clicked"
-        QT_MOC_LITERAL(194, 19),  // "setTimelineDropDown"
-        QT_MOC_LITERAL(214, 19),  // "setLocationDropDown"
-        QT_MOC_LITERAL(234, 23),  // "setTrafficDataDropDowns"
-        QT_MOC_LITERAL(258, 23),  // "setWeatherDataDropDowns"
-        QT_MOC_LITERAL(282, 24),  // "setCombinedDataDropDowns"
-        QT_MOC_LITERAL(307, 29),  // "on_locationDropDown_activated"
-        QT_MOC_LITERAL(337, 5),  // "index"
-        QT_MOC_LITERAL(343, 29),  // "on_timelineDropDown_activated"
-        QT_MOC_LITERAL(373, 29)   // "on_datatypeDropDown_activated"
+        QT_MOC_LITERAL(118, 23),  // "on_traficButton_clicked"
+        QT_MOC_LITERAL(142, 24),  // "on_weatherButton_clicked"
+        QT_MOC_LITERAL(167, 25),  // "on_combinedButton_clicked"
+        QT_MOC_LITERAL(193, 19),  // "setTimelineDropDown"
+        QT_MOC_LITERAL(213, 19),  // "setLocationDropDown"
+        QT_MOC_LITERAL(233, 23),  // "setTrafficDataDropDowns"
+        QT_MOC_LITERAL(257, 23),  // "setWeatherDataDropDowns"
+        QT_MOC_LITERAL(281, 24),  // "setCombinedDataDropDowns"
+        QT_MOC_LITERAL(306, 29),  // "on_locationDropDown_activated"
+        QT_MOC_LITERAL(336, 5),  // "index"
+        QT_MOC_LITERAL(342, 29),  // "on_timelineDropDown_activated"
+        QT_MOC_LITERAL(372, 29)   // "on_datatypeDropDown_activated"
     },
     "MainWindow",
     "createChart",
@@ -76,7 +76,7 @@ Q_CONSTINIT static const qt_meta_stringdata_MainWindow_t qt_meta_stringdata_Main
     "unordered_map<QString,QString>",
     "unordered_map<QString,vector<double>>",
     "onFetchDataButtonClicked",
-    "on_trafficButton_clicked",
+    "on_traficButton_clicked",
     "on_weatherButton_clicked",
     "on_combinedButton_clicked",
     "setTimelineDropDown",
@@ -106,22 +106,22 @@ Q_CONSTINIT static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    6,   92,    2, 0x08,    1 /* Private */,
-       5,    0,  105,    2, 0x08,    8 /* Private */,
-       6,    0,  106,    2, 0x08,    9 /* Private */,
-       7,    0,  107,    2, 0x08,   10 /* Private */,
-       8,    0,  108,    2, 0x08,   11 /* Private */,
-       9,    0,  109,    2, 0x08,   12 /* Private */,
-      10,    0,  110,    2, 0x08,   13 /* Private */,
-      11,    0,  111,    2, 0x08,   14 /* Private */,
-      12,    0,  112,    2, 0x08,   15 /* Private */,
-      13,    0,  113,    2, 0x08,   16 /* Private */,
-      14,    1,  114,    2, 0x08,   17 /* Private */,
-      16,    1,  117,    2, 0x08,   19 /* Private */,
-      17,    1,  120,    2, 0x08,   21 /* Private */,
+       1,    5,   92,    2, 0x08,    1 /* Private */,
+       5,    0,  103,    2, 0x08,    7 /* Private */,
+       6,    0,  104,    2, 0x08,    8 /* Private */,
+       7,    0,  105,    2, 0x08,    9 /* Private */,
+       8,    0,  106,    2, 0x08,   10 /* Private */,
+       9,    0,  107,    2, 0x08,   11 /* Private */,
+      10,    0,  108,    2, 0x08,   12 /* Private */,
+      11,    0,  109,    2, 0x08,   13 /* Private */,
+      12,    0,  110,    2, 0x08,   14 /* Private */,
+      13,    0,  111,    2, 0x08,   15 /* Private */,
+      14,    1,  112,    2, 0x08,   16 /* Private */,
+      16,    1,  115,    2, 0x08,   18 /* Private */,
+      17,    1,  118,    2, 0x08,   20 /* Private */,
 
  // slots: parameters
-    QMetaType::Void, QMetaType::QString, QMetaType::QString, 0x80000000 | 3, 0x80000000 | 4, QMetaType::QString, QMetaType::QString,    2,    2,    2,    2,    2,    2,
+    QMetaType::Void, QMetaType::QString, QMetaType::QString, 0x80000000 | 3, 0x80000000 | 4, QMetaType::QString,    2,    2,    2,    2,    2,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -154,10 +154,9 @@ Q_CONSTINIT const QMetaObject MainWindow::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<unordered_map<QString,QString>, std::false_type>,
         QtPrivate::TypeAndForceComplete<unordered_map<QString,vector<double>>, std::false_type>,
         QtPrivate::TypeAndForceComplete<QString, std::false_type>,
-        QtPrivate::TypeAndForceComplete<QString, std::false_type>,
         // method 'onFetchDataButtonClicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'on_trafficButton_clicked'
+        // method 'on_traficButton_clicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'on_weatherButton_clicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
@@ -192,9 +191,9 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         auto *_t = static_cast<MainWindow *>(_o);
         (void)_t;
         switch (_id) {
-        case 0: _t->createChart((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<unordered_map<QString,QString>>>(_a[3])),(*reinterpret_cast< std::add_pointer_t<unordered_map<QString,vector<double>>>>(_a[4])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[5])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[6]))); break;
+        case 0: _t->createChart((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<unordered_map<QString,QString>>>(_a[3])),(*reinterpret_cast< std::add_pointer_t<unordered_map<QString,vector<double>>>>(_a[4])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[5]))); break;
         case 1: _t->onFetchDataButtonClicked(); break;
-        case 2: _t->on_trafficButton_clicked(); break;
+        case 2: _t->on_traficButton_clicked(); break;
         case 3: _t->on_weatherButton_clicked(); break;
         case 4: _t->on_combinedButton_clicked(); break;
         case 5: _t->setTimelineDropDown(); break;
