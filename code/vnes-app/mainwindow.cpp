@@ -51,7 +51,7 @@ MainWindow::MainWindow(Controller *controller, QWidget *parent) :
     locationDropDownIndex = 0;
     timelineDropDownIndex = 0;
     weatherDataTypeDropDownIndex = 0;
-    traficDataTypeDropDownIndex = 0;
+    trafficDataTypeDropDownIndex = 0;
 
     //Set options for drop downs
     setTrafficDataDropDowns();
@@ -68,8 +68,8 @@ MainWindow::~MainWindow()
 }
 
 /**
- * @brief MainWindow::createTraficMaintanaceChart
-     Function for creating road maintanace chart. Takes trafic data and font size as
+ * @brief MainWindow::createTrafficMaintanaceChart
+     Function for creating road maintanace chart. Takes traffic data and font size as
      parameters and returns pointer to QChartView object
  * @param data
      Traffic data
@@ -78,7 +78,7 @@ MainWindow::~MainWindow()
  * @return *QChartView
      Created chart
  */
-QChartView * MainWindow::createTraficMaintanaceChart(unordered_map<QString, QString> data, int fontSize)
+QChartView * MainWindow::createTrafficMaintanaceChart(unordered_map<QString, QString> data, int fontSize)
 {
     QPieSeries *series = new QPieSeries();
     for(auto ele: data)
@@ -109,7 +109,7 @@ QChartView * MainWindow::createTraficMaintanaceChart(unordered_map<QString, QStr
 
 /**
  * @brief MainWindow::createTraffcRoadconditionsChart
-    Function for creating roadconditions chart. Takes trafic data and font size as
+    Function for creating roadconditions chart. Takes traffic data and font size as
     parameters and returns pointer to QChartView object
  * @param data
     Traffic data
@@ -227,7 +227,7 @@ QChartView * MainWindow::createWeatherChart(unordered_map<QString, vector<double
  * @param dataType
     What data should be included in chart
  * @param data
-    Trafic data
+    Traffic data
  * @param weatherData
     Weather data
  * @param weatherDataType
@@ -241,7 +241,7 @@ void MainWindow::createChart(QString contentType, QString dataType, unordered_ma
     {
         if(dataType == "maintenance")
         {
-            QChartView *chartView = createTraficMaintanaceChart(data, 36);
+            QChartView *chartView = createTrafficMaintanaceChart(data, 36);
             chartView->show();
 
         }else if(dataType == "roadconditions")
@@ -263,7 +263,7 @@ void MainWindow::createChart(QString contentType, QString dataType, unordered_ma
         QChartView *chartView;
         if(dataType == "maintenance")
         {
-            chartView = createTraficMaintanaceChart(data, 18);
+            chartView = createTrafficMaintanaceChart(data, 18);
 
         } else if(dataType == "roadconditions")
         {
@@ -320,7 +320,7 @@ void MainWindow::setLocationDropDown()
 
 /**
  * @brief MainWindow::setTrafficDataDropDowns
-    Set drop downs for trafic data view
+    Set drop downs for traffic data view
  */
 void MainWindow::setTrafficDataDropDowns()
 {
@@ -330,7 +330,7 @@ void MainWindow::setTrafficDataDropDowns()
     ui->datatypeDropDown->clear();
     ui->datatypeDropDown->addItem("Road Maintenance");
     ui->datatypeDropDown->addItem("Road Condition Forecast");
-    ui->datatypeDropDown->setCurrentIndex(traficDataTypeDropDownIndex);
+    ui->datatypeDropDown->setCurrentIndex(trafficDataTypeDropDownIndex);
     ui->datatypeDropDown->show();
 }
 
@@ -373,7 +373,7 @@ void MainWindow::onFetchDataButtonClicked()
     //controller_->pushButtonClicked("Digitraffic", "traffic", j, "2022-01-19T10:06:38Z");
     if(ui->trafficButton->isChecked())
     {
-        QString dataType = getTraficDataType();
+        QString dataType = getTrafficDataType();
         unordered_map<QString, QString> j = controller_->getData(dataType);
         createChart("traffic", dataType, j, {});
     }else if(ui->weatherButton->isChecked())
@@ -384,7 +384,7 @@ void MainWindow::onFetchDataButtonClicked()
     {
         unordered_map<QString, QString> j = controller_->getData("maintenance");
         unordered_map<QString, vector<double>> weather = {{"Temperature", {0.4, 0.4, 0.3, 0.3, 0.2, -0.2, -0.4}}, {"Windspeed", {3.6, 3.8, 3.8, 4.4, 4.5, 4.8, 4.2}}};
-        createChart("combined",  getTraficDataType(), j, weather, getWeatherDataType());
+        createChart("combined",  getTrafficDataType(), j, weather, getWeatherDataType());
     }
 
 }
@@ -406,26 +406,26 @@ QString MainWindow::getWeatherDataType()
 }
 
 /**
- * @brief MainWindow::getTraficDataType
-    Checks witch trafic data type user have selected
+ * @brief MainWindow::getTrafficDataType
+    Checks witch traffic data type user have selected
  * @return QString
-    Selected trafic data type
+    Selected traffic data type
  */
-QString MainWindow::getTraficDataType()
+QString MainWindow::getTrafficDataType()
 {
-    if (traficDataTypeDropDownIndex == 0) {
+    if (trafficDataTypeDropDownIndex == 0) {
         return "maintenance";
-    } else if (traficDataTypeDropDownIndex == 1) {
+    } else if (trafficDataTypeDropDownIndex == 1) {
         return "roadconditions";
     }
     return NULL;
 }
 
 /**
- * @brief MainWindow::on_traficButton_clicked
-    Set the UI to show trafic view when the trafic button is clicked
+ * @brief MainWindow::on_trafficButton_clicked
+    Set the UI to show traffic view when the traffic button is clicked
  */
-void MainWindow::on_traficButton_clicked()
+void MainWindow::on_trafficButton_clicked()
 {
   ui->weatherButton->setChecked(false);
   ui->combinedButton->setChecked(false);
@@ -433,6 +433,7 @@ void MainWindow::on_traficButton_clicked()
 
   ui->datatypeLabel->show();
   setTrafficDataDropDowns();
+  std::cout << "Hep";
 }
 
 /**
@@ -494,11 +495,9 @@ void MainWindow::on_timelineDropDown_activated(int index)
 void MainWindow::on_datatypeDropDown_activated(int index)
 {
     if (ui->trafficButton->isChecked()) {
-        traficDataTypeDropDownIndex = index;
+        trafficDataTypeDropDownIndex = index;
     } else {
         weatherDataTypeDropDownIndex = index;
     }
 
 }
-
-

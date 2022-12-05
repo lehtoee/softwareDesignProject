@@ -33,14 +33,14 @@ public:
     int locationDropDownIndex;
     int timelineDropDownIndex;
     int weatherDataTypeDropDownIndex;
-    int traficDataTypeDropDownIndex;
+    int trafficDataTypeDropDownIndex;
 
 private slots:
     void createChart(QString, QString, unordered_map<QString, QString>, unordered_map<QString, vector<double>>, QString);
 
     void onFetchDataButtonClicked();
 
-    void on_traficButton_clicked();
+    void on_trafficButton_clicked();
 
     void on_weatherButton_clicked();
 
@@ -63,11 +63,11 @@ private slots:
     void on_datatypeDropDown_activated(int index);
 
 private:
-    QChartView * createTraficMaintanaceChart(unordered_map<QString, QString>, int);
+    QChartView * createTrafficMaintanaceChart(unordered_map<QString, QString>, int);
     QChartView * createTraffcRoadconditionsChart(unordered_map<QString, QString>, int);
     QChartView * createWeatherChart(unordered_map<QString, vector<double>>, QString, int);
     QString getWeatherDataType();
-    QString getTraficDataType();
+    QString getTrafficDataType();
 
     Ui::MainWindow *ui;
     Controller* controller_;

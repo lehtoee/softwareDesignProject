@@ -34,7 +34,7 @@ struct qt_meta_stringdata_MainWindow_t {
     char stringdata3[31];
     char stringdata4[38];
     char stringdata5[25];
-    char stringdata6[24];
+    char stringdata6[25];
     char stringdata7[25];
     char stringdata8[26];
     char stringdata9[20];
@@ -57,18 +57,18 @@ Q_CONSTINIT static const qt_meta_stringdata_MainWindow_t qt_meta_stringdata_Main
         QT_MOC_LITERAL(24, 30),  // "unordered_map<QString,QString>"
         QT_MOC_LITERAL(55, 37),  // "unordered_map<QString,vector<..."
         QT_MOC_LITERAL(93, 24),  // "onFetchDataButtonClicked"
-        QT_MOC_LITERAL(118, 23),  // "on_traficButton_clicked"
-        QT_MOC_LITERAL(142, 24),  // "on_weatherButton_clicked"
-        QT_MOC_LITERAL(167, 25),  // "on_combinedButton_clicked"
-        QT_MOC_LITERAL(193, 19),  // "setTimelineDropDown"
-        QT_MOC_LITERAL(213, 19),  // "setLocationDropDown"
-        QT_MOC_LITERAL(233, 23),  // "setTrafficDataDropDowns"
-        QT_MOC_LITERAL(257, 23),  // "setWeatherDataDropDowns"
-        QT_MOC_LITERAL(281, 24),  // "setCombinedDataDropDowns"
-        QT_MOC_LITERAL(306, 29),  // "on_locationDropDown_activated"
-        QT_MOC_LITERAL(336, 5),  // "index"
-        QT_MOC_LITERAL(342, 29),  // "on_timelineDropDown_activated"
-        QT_MOC_LITERAL(372, 29)   // "on_datatypeDropDown_activated"
+        QT_MOC_LITERAL(118, 24),  // "on_trafficButton_clicked"
+        QT_MOC_LITERAL(143, 24),  // "on_weatherButton_clicked"
+        QT_MOC_LITERAL(168, 25),  // "on_combinedButton_clicked"
+        QT_MOC_LITERAL(194, 19),  // "setTimelineDropDown"
+        QT_MOC_LITERAL(214, 19),  // "setLocationDropDown"
+        QT_MOC_LITERAL(234, 23),  // "setTrafficDataDropDowns"
+        QT_MOC_LITERAL(258, 23),  // "setWeatherDataDropDowns"
+        QT_MOC_LITERAL(282, 24),  // "setCombinedDataDropDowns"
+        QT_MOC_LITERAL(307, 29),  // "on_locationDropDown_activated"
+        QT_MOC_LITERAL(337, 5),  // "index"
+        QT_MOC_LITERAL(343, 29),  // "on_timelineDropDown_activated"
+        QT_MOC_LITERAL(373, 29)   // "on_datatypeDropDown_activated"
     },
     "MainWindow",
     "createChart",
@@ -76,7 +76,7 @@ Q_CONSTINIT static const qt_meta_stringdata_MainWindow_t qt_meta_stringdata_Main
     "unordered_map<QString,QString>",
     "unordered_map<QString,vector<double>>",
     "onFetchDataButtonClicked",
-    "on_traficButton_clicked",
+    "on_trafficButton_clicked",
     "on_weatherButton_clicked",
     "on_combinedButton_clicked",
     "setTimelineDropDown",
@@ -156,7 +156,7 @@ Q_CONSTINIT const QMetaObject MainWindow::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<QString, std::false_type>,
         // method 'onFetchDataButtonClicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'on_traficButton_clicked'
+        // method 'on_trafficButton_clicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'on_weatherButton_clicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
@@ -193,7 +193,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         switch (_id) {
         case 0: _t->createChart((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<unordered_map<QString,QString>>>(_a[3])),(*reinterpret_cast< std::add_pointer_t<unordered_map<QString,vector<double>>>>(_a[4])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[5]))); break;
         case 1: _t->onFetchDataButtonClicked(); break;
-        case 2: _t->on_traficButton_clicked(); break;
+        case 2: _t->on_trafficButton_clicked(); break;
         case 3: _t->on_weatherButton_clicked(); break;
         case 4: _t->on_combinedButton_clicked(); break;
         case 5: _t->setTimelineDropDown(); break;
