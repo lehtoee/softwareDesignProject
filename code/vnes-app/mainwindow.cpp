@@ -27,10 +27,9 @@ int timelineDropDownIndex;
 int weatherDataTypeDropDownIndex;
 int trafficDataTypeDropDownIndex;
 
-MainWindow::MainWindow(Controller *controller, QWidget *parent) :
+MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow),
-    controller_(controller)
+    ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
@@ -349,9 +348,10 @@ void MainWindow::onFetchDataButtonClicked()
 {
     //std::vector<QString> j({"21","61","22","62"});
     //controller_->pushButtonClicked("Digitraffic", "traffic", j, "2022-01-19T10:06:38Z");
+    QString dataType;
     if(ui->dataLabel->text() == "Traffic Data")
     {
-        QString dataType;
+
         if(ui->datatypeDropDown->currentText() == "Road Maintenance")
         {
             dataType = "maintenance";
@@ -359,8 +359,9 @@ void MainWindow::onFetchDataButtonClicked()
         {
             dataType = "roadconditions";
         }
-        unordered_map<QString, QString> j = controller_->getData(dataType);
-        createChart("traffic", dataType, j, {});
+        //unordered_map<QString, QString> j = controller_->getData(dataType);
+
+        //createChart("traffic", dataType, j, {});
     }else if(ui->dataLabel->text() == "Weather Data")
     {
         QString dataType;
@@ -368,21 +369,21 @@ void MainWindow::onFetchDataButtonClicked()
         {
             dataType = "observed";
             unordered_map<QString, vector<double>> j = {{"Temperature", {0.3, 0.3, 0.2, 0.2, 0.1, -0.1, -0.3}}, {"Windspeed", {3.5, 3.7, 3.7, 4.3, 4.4, 4.7, 4.1}}};
-            createChart("weather", dataType, {}, j);
+            //createChart("weather", dataType, {}, j);
         }else if(ui->datatypeDropDown->currentText() == "Predicted Temperature & Wind")
         {
             dataType = "forecast";
             unordered_map<QString, vector<double>> j = {{"Temperature", {0.4, 0.4, 0.3, 0.3, 0.2, -0.2, -0.4}}, {"Windspeed", {3.6, 3.8, 3.8, 4.4, 4.5, 4.8, 4.2}}};
-            createChart("weather", dataType, {}, j);
+            //createChart("weather", dataType, {}, j);
         }
 
     }else if(ui->dataLabel->text() == "Combined Data")
     {
-        unordered_map<QString, QString> j = controller_->getData("maintenance");
+        //unordered_map<QString, QString> j = controller_->getData("maintenance");
         unordered_map<QString, vector<double>> weather = {{"Temperature", {0.4, 0.4, 0.3, 0.3, 0.2, -0.2, -0.4}}, {"Windspeed", {3.6, 3.8, 3.8, 4.4, 4.5, 4.8, 4.2}}};
-        createChart("combined", "maintenance", j, weather, getTraficDataType(), getWeatherDataType());
+        //createChart("combined", "maintenance", j, weather, getTraficDataType(), getWeatherDataType());
     }
-
+    emit fetchDigiTraffic("maintenance", dataType, "Turku", "4");
 }
 
 QString MainWindow::getWeatherDataType()

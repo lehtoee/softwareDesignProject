@@ -42,7 +42,7 @@ void NetworkHandler::fetchDataJson(QString datatype, QString location, QString t
     manager->get(request);
 }
 
-QJsonObject NetworkHandler::getJsonData()
+std::unordered_map<QString, QString> NetworkHandler::getJsonData()
 {
     return jsonData_;
 }
@@ -62,7 +62,9 @@ void NetworkHandler::jsonFetchFinished(QNetworkReply *reply)
     QByteArray input = reply->readAll();
     QJsonDocument document = QJsonDocument::fromJson(input);
     QJsonObject jsonObj = document.object();
-    std::unordered_map<QString, QString> digitrafficData = utilities->parseJson(jsonObj, datatype_, coordinates_, time_);
+    jsonData_ = utilities->parseJson(jsonObj, datatype_, coordinates_, time_);
+
+    emit jsonReady(jsonData_, datatype_, coordinates_, time_);
 
 }
 

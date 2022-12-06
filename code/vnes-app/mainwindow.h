@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <QMainWindow>
-#include <controller.h>
 #include <QtWidgets/QMainWindow>
 #include <QtCharts/QChartView>
 #include <QtCharts/QBarSet>
@@ -28,15 +27,20 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(Controller *controller, QWidget *parent = nullptr);
+    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     int locationDropDownIndex;
     int timelineDropDownIndex;
     int weatherDataTypeDropDownIndex;
     int traficDataTypeDropDownIndex;
 
-private slots:
     void createChart(QString, QString, unordered_map<QString, QString>, unordered_map<QString, vector<double>>, QString, QString);
+
+signals:
+    void fetchDigiTraffic(QString source, QString datatype, QString location, QString time);
+
+private slots:
+
 
     void onFetchDataButtonClicked();
 
@@ -71,7 +75,6 @@ private:
     QString getTraficDataType();
 
     Ui::MainWindow *ui;
-    Controller* controller_;
 };
 
 #endif // MAINWINDOW_H
