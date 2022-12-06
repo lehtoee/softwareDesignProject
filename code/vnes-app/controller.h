@@ -27,7 +27,7 @@ public:
     void getTimeDate();
 
 private:
-    std::tuple<QString, QString> parseTimeDate(QString time);
+    std::tuple<QString, QString> parseTimeDate(QString t, QString type);
     NetworkHandler* networkhandler_;
     struct timeNDate{
         int hour;

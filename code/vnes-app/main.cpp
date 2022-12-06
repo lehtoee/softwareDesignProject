@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
  * Veikka:
  * - Time funktio observation vs forecast
  * - Connecti controllerin ja networkhandlerin väliin jotta saadaan data sinne
-- The user must be able to request calculations and visualization on average daily
+- The user must be able to request calculations and visualization on average dailyl
 temperature at certain location in certain month
 - The user must be able to request calculations and visualization on maximum and
 minimum daily temperature at certain location in certain month
