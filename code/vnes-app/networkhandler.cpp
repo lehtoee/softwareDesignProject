@@ -89,8 +89,12 @@ void NetworkHandler::fetchDataXML(QString datatype, QString location, std::tuple
                 "&starttime="+std::get<0>(time)+"&endtime="+std::get<1>(time)+"&timestep=30&parameters=temperature,windspeedms";
         qDebug()<<URLstring;
     }
-    else {
-        URLstring = "";
+    else if(datatype == "lastMonth") {
+        URLstring = baseURL+"::observations::weather::daily::simple&geoid="+GeoID+"&parameters=tday,tmax,tmin";
+        qDebug() << URLstring;
+    }
+    else{
+        return;
     }
     const QUrl url = QUrl(URLstring);
     QNetworkRequest request(url);
@@ -108,7 +112,7 @@ void NetworkHandler::XMLFetchFinished(QNetworkReply *reply)
     QByteArray byteArrayContent = reply->readAll();
     QString content = QString(byteArrayContent);
     std::unordered_map<QString, std::vector<double>> FMIdata = utilities->parseXML(content);
-    qDebug() << "tänne";
+    emit xmlReady(FMIdata, datatype_);
 }
 
 

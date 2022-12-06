@@ -384,6 +384,7 @@ void MainWindow::onFetchDataButtonClicked()
         //createChart("combined", "maintenance", j, weather, getTraficDataType(), getWeatherDataType());
     }
     emit fetchDigiTraffic("maintenance", dataType, "Turku", "4");
+    emit fetchFMI("FMI", "lastMonth", "Tampere", "4");
 }
 
 QString MainWindow::getWeatherDataType()

@@ -28,6 +28,7 @@ public:
 
 signals:
     void jsonReady(std::unordered_map<QString, QString> data, QString datatype, std::vector<QString> coordinates, QString time);
+    void xmlReady(std::unordered_map<QString, std::vector<double>> data, QString datatype);
 
 private slots:
     void jsonFetchFinished(QNetworkReply* reply);

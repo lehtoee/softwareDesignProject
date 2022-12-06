@@ -162,11 +162,13 @@ std::unordered_map<QString, std::vector<double> > utils::parseXML(QString conten
     QString type;
     std::vector<double> temperature;
     std::vector<double> windspeed;
+    std::vector<double> avgtemp;
+    std::vector<double> mintemp;
+    std::vector<double> maxtemp;
 
     while (!reader.atEnd()) {
         if ( reader.name() == QString("Time")) {
             QString time = reader.readElementText();
-            qDebug() << time;
         }
         else if (reader.name() ==QString( "ParameterName")){
             type = reader.readElementText();
@@ -188,13 +190,26 @@ std::unordered_map<QString, std::vector<double> > utils::parseXML(QString conten
             else if (type == "ws_10min"){
                 windspeed.push_back(value);
             }
+            else if (type == "tday") {
+                avgtemp.push_back(value);
+            }
+            else if(type == "tmax"){
+                maxtemp.push_back(value);
+            }
+            else if(type == "tmin") {
+                mintemp.push_back(value);
+            }
 
         }
         reader.readNext();
     }
     std::unordered_map<QString, std::vector<double>> FMIdata = {
-    {"Temperature", temperature},
-     {"windspeed", windspeed}     };
+    {"temperature", temperature},
+     {"windspeed", windspeed},
+        {"avgtemp", avgtemp},
+        {"mintemp", mintemp},
+        {"maxtemp", maxtemp}
+    };
     return FMIdata;
 }
 

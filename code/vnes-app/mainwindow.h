@@ -38,6 +38,7 @@ public:
 
 signals:
     void fetchDigiTraffic(QString source, QString datatype, QString location, QString time);
+    void fetchFMI(QString source, QString datatype, QString location, QString time);
 
 private slots:
 

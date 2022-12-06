@@ -16,12 +16,12 @@ int main(int argc, char *argv[])
 
 /* TODO
  * Veikka:
- * - Time funktio observation vs forecast
- * - Connecti controllerin ja networkhandlerin väliin jotta saadaan data sinne
+ * - Time funktio observation vs forecast (done melkeen)
+ * - Connecti controllerin ja networkhandlerin väliin jotta saadaan data sinne (done)
 - The user must be able to request calculations and visualization on average dailyl
-temperature at certain location in certain month
+temperature at certain location in certain month (done paitsi visualisointi)
 - The user must be able to request calculations and visualization on maximum and
-minimum daily temperature at certain location in certain month
+minimum daily temperature at certain location in certain month(done paitsi visualisointi)
  *
  *
  * Niklas:
