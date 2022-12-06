@@ -3,8 +3,9 @@
 #include <string>
 
 
-Controller::Controller(NetworkHandler* networkhandler)
-    : networkhandler_(networkhandler)
+Controller::Controller(NetworkHandler* networkhandler, MainWindow* view)
+    : networkhandler_(networkhandler),
+      view_(view)
 {
     std::unordered_map<QString, QString> digitrafficData;
     //timeNDate timeDate;
@@ -12,11 +13,14 @@ Controller::Controller(NetworkHandler* networkhandler)
     std::unordered_map<QString, QString> trafficmessages;
     std::unordered_map<QString, QString> maintenance;
     std::unordered_map<QString, QString> roadconditions;
+    connect(view_, &MainWindow::fetchDigiTraffic, this, &Controller::pushButtonClicked);
+    connect(networkhandler_, &NetworkHandler::jsonReady, this, &Controller::createDigiTrafficChart);
 }
 
 Controller::~Controller()
 {
     delete networkhandler_;
+    delete view_;
 }
 
 void Controller::pushButtonClicked(QString source, QString datatype,
@@ -25,12 +29,21 @@ void Controller::pushButtonClicked(QString source, QString datatype,
     // Get the start and end time of
     std::tuple<QString, QString> startNendTime = parseTimeDate("6");
     qDebug() << get<0>(startNendTime) + " - " + get<1>(startNendTime);
-    networkhandler_->fetchDataXML("weatherObserved", "Tampere", startNendTime);
+    if(source == "FMI"){
+        networkhandler_->fetchDataXML("weatherObserved", "Tampere", startNendTime);
+    }
+    else{
+        networkhandler_->fetchDataJson(datatype, location, time);
 
-    networkhandler_->fetchDataJson(datatype, location, time);
-    QJsonObject jsonData = networkhandler_->getJsonData();
-    //some async stuff would be needed here
-    //parseDigitrafficData(jsonData, datatype);
+    }
+
+}
+
+void Controller::createDigiTrafficChart(std::unordered_map<QString, QString> data, QString datatype, std::vector<QString> coordinates, QString time)
+{
+    //std::unordered_map<QString, QString> data = networkhandler_->getJsonData();
+    view_->createChart("traffic", datatype, data, {}, datatype, "observed");
+    //view_.&MainWindow::createChart("traffic", "maintenance", data, {});
 }
 
 
@@ -74,7 +87,7 @@ std::tuple<QString, QString> Controller::parseTimeDate(QString t, QString type)
 
     localTime->tm_hour -= 2;
 
-    if (type == "observation"){
+    //if (type == "observation"){
         if (t == "2"){
 
             strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
@@ -142,8 +155,8 @@ std::tuple<QString, QString> Controller::parseTimeDate(QString t, QString type)
             strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
             QString starttime = format;
         }
-    }
-    else {
+    //}
+    //else {
         if (t == "2"){
 
             strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
@@ -204,5 +217,16 @@ std::tuple<QString, QString> Controller::parseTimeDate(QString t, QString type)
 
             return std::tuple<QString, QString>{starttime, endtime};
         }
+<<<<<<< code/vnes-app/controller.cpp
+        else if(t=="1m"){
+            strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
+            QString endtime = format;
+            localTime->tm_mon -= 1;
+            strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
+            QString starttime = format;
+        }
+    //}
+=======
     }
+>>>>>>> code/vnes-app/controller.cpp
 }

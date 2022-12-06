@@ -1,4 +1,6 @@
 #include "mainwindow.h"
+#include "networkhandler.h"
+#include "controller.h"
 
 #include <QApplication>
 
@@ -6,11 +8,11 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     NetworkHandler* networkhandler(new NetworkHandler);
-    Controller* controller(new Controller(networkhandler));
-    MainWindow* view(new MainWindow(controller));
+    MainWindow* view(new MainWindow);
+    Controller* controller(new Controller(networkhandler, view));
     view->show();
     return a.exec();
-}
+};
 
 /* TODO
  * Veikka:
