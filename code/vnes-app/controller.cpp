@@ -79,7 +79,7 @@ std::unordered_map<QString, QString> Controller::getData(QString type)
 
 
 
-std::tuple<QString, QString> Controller::parseTimeDate(QString t)
+std::tuple<QString, QString> Controller::parseTimeDate(QString t, QString type)
 {
     char format [50];
     time_t currentTime = time(0);
@@ -161,13 +161,13 @@ std::tuple<QString, QString> Controller::parseTimeDate(QString t)
 
             strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
             QString endtime = format;
-            if (localTime->tm_hour < 2){
-                int diff = localTime->tm_hour - 2;
-                localTime->tm_hour = 24 - diff;
-                localTime->tm_mday -= 1;
+            if (localTime->tm_hour > 24 - 2){
+                int diff = localTime->tm_hour + 2 - 24;
+                localTime->tm_hour = diff;
+                localTime->tm_mday += 1;
             }
             else{
-                localTime->tm_hour -= 2;
+                localTime->tm_hour += 2;
             }
             strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
             QString starttime = format;
@@ -177,13 +177,13 @@ std::tuple<QString, QString> Controller::parseTimeDate(QString t)
         else if (t == "6"){
             strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
             QString endtime = format;
-            if (localTime->tm_hour < 6){
-                int diff = localTime->tm_hour - 6;
-                localTime->tm_hour = 24 - diff;
-                localTime->tm_mday -= 1;
+            if (localTime->tm_hour > 24 - 6){
+                int diff = localTime->tm_hour + 6 - 24;
+                localTime->tm_hour = diff;
+                localTime->tm_mday += 1;
             }
             else{
-                localTime->tm_hour -= 6;
+                localTime->tm_hour += 6;
             }
             strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
             QString starttime = format;
@@ -194,13 +194,13 @@ std::tuple<QString, QString> Controller::parseTimeDate(QString t)
         else if (t == "12") {
             strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
             QString endtime = format;
-            if (localTime->tm_hour < 12){
-                int diff = localTime->tm_hour - 12;
-                localTime->tm_hour = 24 - diff;
-                localTime->tm_mday -= 1;
+            if (localTime->tm_hour > 24 - 12){
+                int diff = localTime->tm_hour + 12 - 24;
+                localTime->tm_hour = diff;
+                localTime->tm_mday += 1;
             }
             else{
-                localTime->tm_hour -= 12;
+                localTime->tm_hour += 12;
             }
             strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
             QString starttime = format;
@@ -211,12 +211,13 @@ std::tuple<QString, QString> Controller::parseTimeDate(QString t)
         else if (t=="24"){
             strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
             QString endtime = format;
-            localTime->tm_mday -= 1;
+            localTime->tm_mday += 1;
             strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
             QString starttime = format;
 
             return std::tuple<QString, QString>{starttime, endtime};
         }
+<<<<<<< code/vnes-app/controller.cpp
         else if(t=="1m"){
             strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
             QString endtime = format;
@@ -225,4 +226,7 @@ std::tuple<QString, QString> Controller::parseTimeDate(QString t)
             QString starttime = format;
         }
     //}
+=======
+    }
+>>>>>>> code/vnes-app/controller.cpp
 }
