@@ -41,6 +41,7 @@ private:
         int day;
     } timeDate;
     std::unordered_map<QString, QString> digitrafficData;
+    QString source_;
 
     //testimapit
     std::unordered_map<QString, QString> trafficmessages;

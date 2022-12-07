@@ -5,15 +5,9 @@
 
 Controller::Controller(NetworkHandler* networkhandler, MainWindow* view)
     : networkhandler_(networkhandler),
-<<<<<<< code/vnes-app/controller.cpp
     view_(view)
-=======
-      view_(view)
->>>>>>> code/vnes-app/controller.cpp
 {
     std::unordered_map<QString, QString> digitrafficData;
-    //timeNDate timeDate;
-    //getTimeDate();
     std::unordered_map<QString, QString> trafficmessages;
     std::unordered_map<QString, QString> maintenance;
     std::unordered_map<QString, QString> roadconditions;
@@ -35,21 +29,20 @@ void Controller::pushButtonClicked(QString source, QString datatype,
                                    QString location, QString time )
 {
     // Get the start and end time of
-<<<<<<< code/vnes-app/controller.cpp
+
     std::tuple<QString, QString> startNendTime = parseTimeDate(time, datatype);
     qDebug() << get<0>(startNendTime) + " - " + get<1>(startNendTime);
+    source_ = source;
     if(source == "FMI"){
         networkhandler_->fetchDataXML(datatype, location, startNendTime);
-=======
-    std::tuple<QString, QString> startNendTime = parseTimeDate("6", "observation");
-    qDebug() << get<0>(startNendTime) + " - " + get<1>(startNendTime);
-    if(source == "FMI"){
-        networkhandler_->fetchDataXML("weatherObserved", "Tampere", startNendTime);
->>>>>>> code/vnes-app/controller.cpp
     }
-    else{
+    else if(source == "digitraffic"){
         networkhandler_->fetchDataJson(datatype, location, time);
 
+    }
+    else {
+        networkhandler_->fetchDataXML(datatype, location, startNendTime);
+        networkhandler_->fetchDataJson(datatype, location, time);
     }
 
 }
@@ -63,12 +56,9 @@ void Controller::createDigiTrafficChart(std::unordered_map<QString, QString> dat
 
 void Controller::createFMIChart(std::unordered_map<QString, std::vector<double> > data, QString datatype)
 {
-<<<<<<< code/vnes-app/controller.cpp
+
     view_->createChart("weather", datatype, {}, data, "", "");
-=======
-    QString contentType = ("weather");
-    qDebug() << data["temperature"];
->>>>>>> code/vnes-app/controller.cpp
+
 }
 
 
@@ -112,11 +102,8 @@ std::tuple<QString, QString> Controller::parseTimeDate(QString t, QString type)
 
     localTime->tm_hour -= 2;
 
-<<<<<<< code/vnes-app/controller.cpp
-    if (type == "observed"){
-=======
-    if (type == "observation"){
->>>>>>> code/vnes-app/controller.cpp
+    if (type == "observed" || type == "maintenance"){
+
 
         if (t == "2"){
 
