@@ -14,6 +14,7 @@ int main(int argc, char *argv[])
     return a.exec();
 };
 
+
 /* TODO
  * Veikka:
  * - Time funktio observation vs forecast (done melkeen)

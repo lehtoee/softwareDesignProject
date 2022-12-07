@@ -184,10 +184,10 @@ std::unordered_map<QString, std::vector<double> > utils::parseXML(QString conten
             else{
                 value = XMLvalue.toDouble();
             }
-            if (type == "t2m"){
+            if (type == "t2m" || type == "temperature"){
                 temperature.push_back(value);
             }
-            else if (type == "ws_10min"){
+            else if (type == "ws_10min" ||type == "windspeedms"){
                 windspeed.push_back(value);
             }
             else if (type == "tday") {
@@ -212,5 +212,3 @@ std::unordered_map<QString, std::vector<double> > utils::parseXML(QString conten
     };
     return FMIdata;
 }
-
-
