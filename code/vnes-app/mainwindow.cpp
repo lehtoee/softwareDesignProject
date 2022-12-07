@@ -31,10 +31,10 @@ int trafficDataTypeDropDownIndex;
  * Constructor for the user interface. Takes pointers to its controller and
  * parent as parameters.
  */
-MainWindow::MainWindow(Controller *controller, QWidget *parent) :
+MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow),
-    controller_(controller)
+    ui(new Ui::MainWindow)
+
 {
     ui->setupUi(this);
 
@@ -81,14 +81,20 @@ MainWindow::~MainWindow()
 QChartView * MainWindow::createTrafficMaintanaceChart(unordered_map<QString, QString> data, int fontSize)
 {
     QPieSeries *series = new QPieSeries();
-    for(auto ele: data)
+    if(data.size() == 0)
     {
-        series->append(ele.second, 0.2);
-    }
-    for(int i = 0; i < series->slices().count(); i++)
+        series->append("No maintenance", 1);
+    }else
     {
-        QPieSlice *slice = series->slices().at(i);
-        slice->setLabelVisible(true);
+        for(auto ele: data)
+        {
+            series->append(ele.second, 0.2);
+        }
+        for(int i = 0; i < series->slices().count(); i++)
+        {
+            QPieSlice *slice = series->slices().at(i);
+            slice->setLabelVisible(true);
+        }
     }
     QChart *chart = new QChart();
     chart->addSeries(series);
@@ -96,7 +102,7 @@ QChartView * MainWindow::createTrafficMaintanaceChart(unordered_map<QString, QSt
     font.setPixelSize(fontSize);
     chart->setTitleFont(font);
     chart->setTitle("Road Maintenance");
-    chart->legend()->hide();
+    chart->legend()->show();
     chart->setAnimationOptions(QChart::AllAnimations);
 
 
@@ -118,16 +124,43 @@ QChartView * MainWindow::createTrafficMaintanaceChart(unordered_map<QString, QSt
  * @return *QChartView
     Created chart
  */
-QChartView * MainWindow::createTraffcRoadconditionsChart(unordered_map<QString, QString> data, int fontSize)
+QWidget * MainWindow::createTraffcRoadconditionsChart(unordered_map<QString, QString> data, int fontSize)
 {
+    QWidget *window = new QWidget();
+    QVBoxLayout *layout = new QVBoxLayout(window);
+    QLabel *title = new QLabel();
+    title->setText("Road Condition");
+    QFont font;
+    font.setPixelSize(fontSize);
+    title->setFont(font);
+    layout->addWidget(title);
     QString symbol;
     for(auto ele : data)
     {
         if(ele.first == "weatherSymbol")
         {
             symbol = ele.second;
+            continue;
         }
+        QString first = ele.first;
+        QString second = ele.second;
+        if(second == "")
+        {
+            second = "No data";
+        }else
+        {
+            second.replace("_", " ");
+        }
+        QLabel *label = new QLabel();
+        label->setText(first + ": " + second);
+        layout->addWidget(label);
     }
+    QImage weatherLogo = QImage(":/media/"+symbol+".png");
+    QLabel *logolabel = new QLabel();
+    logolabel->setPixmap(QPixmap::fromImage(weatherLogo));
+    layout->addWidget(logolabel);
+    return window;
+    /*
     QBrush weatherLogo = QImage(":/media/"+symbol+".png");
     QChart *chart = new QChart();
     QFont font;
@@ -140,6 +173,79 @@ QChartView * MainWindow::createTraffcRoadconditionsChart(unordered_map<QString, 
     QChartView *chartView = new QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
     chartView->resize(750, 520);
+    return chartView;
+    */
+}
+
+QChartView *MainWindow::createMonthlyWeatherChart(unordered_map<QString , vector<double>> weatherData, int fontSize)
+{
+    QChart *chart = new QChart();
+    QValueAxis *axisX = new QValueAxis();
+    axisX->setTitleText("Day");
+    axisX->setTickCount(int(30));
+    chart->addAxis(axisX, Qt::AlignBottom);
+
+    //Avg temp
+    QLineSeries *avgl_series = new QLineSeries();
+    vector<double> avg = weatherData["avgtemp"];
+    int i = 0;
+    for(auto t: avg)
+    {
+        avgl_series->append(i, t);
+        qDebug() << avgl_series->at(i);
+        i++;
+    }
+    avgl_series->setName("Average Temperature");
+    chart->addSeries(avgl_series);
+
+    QValueAxis *axisY = new QValueAxis;
+    axisY->setMax(15);
+    axisY->setMin(-10);
+    axisY->setTitleText("Temperature (C)");
+    chart->addAxis(axisY, Qt::AlignLeft);
+
+    avgl_series->setPen(QPen (Qt::green));
+    avgl_series->attachAxis(axisX);
+    avgl_series->attachAxis(axisY);
+
+    //Max temp
+    QLineSeries *maxl_series = new QLineSeries();
+    vector<double> max = weatherData["maxtemp"];
+    int j = 0;
+    for(auto tmax: max)
+    {
+        maxl_series->append(j, tmax);
+        j++;
+    }
+    maxl_series->setName("Maximum Temperature");
+    chart->addSeries(maxl_series);
+    maxl_series->setPen(QPen (Qt::red));
+    maxl_series->attachAxis(axisX);
+    maxl_series->attachAxis(axisY);
+
+    //Min temp
+    QLineSeries *minl_series = new QLineSeries();
+    vector<double> min = weatherData["mintemp"];
+    int k = 0;
+    for(auto tmin: avg)
+    {
+        minl_series->append(k, tmin);
+        k++;
+    }
+    minl_series->setName("Minimum Temperature");
+    chart->addSeries(minl_series);
+    minl_series->setPen(QPen (Qt::blue));
+    minl_series->attachAxis(axisX);
+    minl_series->attachAxis(axisY);
+
+    QFont font;
+    font.setPixelSize(fontSize);
+    chart->setTitleFont(font);
+    chart->setTitle("Average, Maximum and Minimum temperatures of 30 days");
+    chart->setAnimationOptions(QChart::AllAnimations);
+    QChartView *chartView = new QChartView(chart);
+    chartView->setRenderHint(QPainter::Antialiasing);
+    chartView->resize(1000, 700);
     return chartView;
 }
 
@@ -162,11 +268,13 @@ QChartView * MainWindow::createWeatherChart(unordered_map<QString, vector<double
     QChart *chart = new QChart();
     QValueAxis *axisX = new QValueAxis();
     axisX->setTitleText("Time (h)");
-    axisX->setTickCount(7);
-    chart->addAxis(axisX, Qt::AlignBottom);
 
     QBarSeries *b_series = new QBarSeries();
-    vector<double> wind = weatherData["Windspeed"];
+    /*unordered_map<QString, vector<double>>::const_iterator pos = weatherData.find("windspeed");
+    vector<double> wind = pos->second;*/
+    vector<double> wind = weatherData["windspeed"];
+    axisX->setTickCount(wind.size());
+    chart->addAxis(axisX, Qt::AlignBottom);
     QBarSet *set = new QBarSet("Wind");
     for(auto w: wind)
     {
@@ -184,7 +292,9 @@ QChartView * MainWindow::createWeatherChart(unordered_map<QString, vector<double
     b_series->attachAxis(axisY2);
 
     QLineSeries *l_series = new QLineSeries();
-    vector<double> temp = weatherData["Temperature"];
+    /*unordered_map<QString, vector<double>>::const_iterator pos2 = weatherData.find("temperature");
+    vector<double> temp = pos2->second;*/
+    vector<double> temp = weatherData["temperature"];
     int i = 0;
     for(auto t: temp)
     {
@@ -211,11 +321,10 @@ QChartView * MainWindow::createWeatherChart(unordered_map<QString, vector<double
     {
         chart->setTitle("Forecast Temperature & Wind Speed");
     } else { return nullptr; }
-    chart->setTitle("Observed Temperature & Wind Speed");
     chart->setAnimationOptions(QChart::AllAnimations);
     QChartView *chartView = new QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
-    chartView->resize(750, 520);
+    chartView->resize(1000, 700);
     return chartView;
 }
 
@@ -235,7 +344,7 @@ QChartView * MainWindow::createWeatherChart(unordered_map<QString, vector<double
     should be included. "observed" as default.
  */
 void MainWindow::createChart(QString contentType, QString dataType, unordered_map<QString, QString> data, unordered_map<QString, vector<double>> weatherData,
-                             QString weatherDataType = "observed")
+                             QString traficDataType = "maintenance", QString weatherDataType = "observed")
 {
     if(contentType == "traffic")
     {
@@ -246,42 +355,65 @@ void MainWindow::createChart(QString contentType, QString dataType, unordered_ma
 
         }else if(dataType == "roadconditions")
         {
-            QChartView *chartView =createTraffcRoadconditionsChart(data, 36);
-            chartView->show();
+            QWidget *chartView =createTraffcRoadconditionsChart(data, 36);
+            QWidget *window = new QWidget;
+            QVBoxLayout *layout = new QVBoxLayout(window);
+            layout->addWidget(chartView);
+            window->resize(1000, 600);
+            window->show();
         }
 
     }else if(contentType == "weather")
     {
-        QChartView *chartView = createWeatherChart(weatherData, dataType, 36);
-        if (chartView != nullptr) {
-            chartView->show();
+        if(dataType == "lastMonth")
+        {
+            QChartView *monthView = createMonthlyWeatherChart(weatherData, 36);
+            monthView->show();
+        }else
+        {
+            QChartView *chartView = createWeatherChart(weatherData, dataType, 36);
+            if (chartView != nullptr) {
+                chartView->show();
+            }
         }
 
     } else if(contentType == "combined")
     {
         //Traffic
-        QChartView *chartView;
         if(dataType == "maintenance")
         {
-            chartView = createTrafficMaintanaceChart(data, 18);
+            QChartView *chartView = createTrafficMaintanaceChart(data, 18);
+            chartView->resize(500, 300);
+
+            //Weather
+            QChartView *chartView1 = createWeatherChart(weatherData, weatherDataType, 18);
+            if (chartView == nullptr) { return; }
+            chartView1->resize(500, 300);
+
+            QWidget *window = new QWidget;
+            QVBoxLayout *layout = new QVBoxLayout(window);
+            layout->addWidget(chartView);
+            layout->addWidget(chartView1);
+            window->resize(1000, 600);
+            window->show();
 
         } else if(dataType == "roadconditions")
         {
-            chartView =createTraffcRoadconditionsChart(data, 18);
+            QWidget *chartView =createTraffcRoadconditionsChart(data, 18);
+            chartView->resize(500, 300);
+
+            //Weather
+            QChartView *chartView1 = createWeatherChart(weatherData, weatherDataType, 18);
+            if (chartView == nullptr) { return; }
+            chartView1->resize(500, 300);
+
+            QWidget *window = new QWidget;
+            QVBoxLayout *layout = new QVBoxLayout(window);
+            layout->addWidget(chartView);
+            layout->addWidget(chartView1);
+            window->resize(1000, 600);
+            window->show();
         } else { return; }
-        chartView->resize(500, 300);
-
-        //Weather
-        QChartView *chartView1 = createWeatherChart(weatherData, weatherDataType, 18);
-        if (chartView == nullptr) { return; }
-        chartView1->resize(500, 300);
-
-        QWidget *window = new QWidget;
-        QVBoxLayout *layout = new QVBoxLayout(window);
-        layout->addWidget(chartView);
-        layout->addWidget(chartView1);
-        window->resize(1000, 600);
-        window->show();
 
     }
 
@@ -299,6 +431,7 @@ void MainWindow::setTimelineDropDown()
     ui->timelineDropDown->addItem("4 hours");
     ui->timelineDropDown->addItem("6 hours");
     ui->timelineDropDown->addItem("12 hours");
+    ui->timelineDropDown->addItem("24 hours");
     ui->timelineDropDown->setCurrentIndex(timelineDropDownIndex);
 }
 
@@ -346,6 +479,7 @@ void MainWindow::setWeatherDataDropDowns()
     ui->datatypeDropDown->clear();
     ui->datatypeDropDown->addItem("Observed Temperature & Wind");
     ui->datatypeDropDown->addItem("Predicted Temperature & Wind");
+    ui->datatypeDropDown->addItem("Monthly Averages");
     ui->datatypeDropDown->setCurrentIndex(weatherDataTypeDropDownIndex);
     ui->datatypeDropDown->show();
 }
@@ -373,18 +507,26 @@ void MainWindow::onFetchDataButtonClicked()
     //controller_->pushButtonClicked("Digitraffic", "traffic", j, "2022-01-19T10:06:38Z");
     if(ui->trafficButton->isChecked())
     {
-        QString dataType = getTrafficDataType();
-        unordered_map<QString, QString> j = controller_->getData(dataType);
-        createChart("traffic", dataType, j, {});
+        QString source = "Digitraffic";
+        QString trafficDataType = getTrafficDataType();
+        QString city = ui->locationDropDown->currentText();
+        QString time = ui->timelineDropDown->currentText();
+        time.replace(" hours", "");
+        emit fetchDigiTraffic(source, trafficDataType, city, time);
+
+
     }else if(ui->weatherButton->isChecked())
     {
-        unordered_map<QString, vector<double>> j = {{"Temperature", {0.4, 0.4, 0.3, 0.3, 0.2, -0.2, -0.4}}, {"Windspeed", {3.6, 3.8, 3.8, 4.4, 4.5, 4.8, 4.2}}};
-        createChart("weather", getWeatherDataType(), {}, j);
+        QString source = "FMI";
+        QString weatherDataType = getWeatherDataType();
+        QString city = ui->locationDropDown->currentText();
+        QString time = ui->timelineDropDown->currentText();
+        time.replace(" hours", "");
+        emit fetchFMI(source, weatherDataType, city, time);
     }else if(ui->combinedButton->isChecked())
     {
-        unordered_map<QString, QString> j = controller_->getData("maintenance");
-        unordered_map<QString, vector<double>> weather = {{"Temperature", {0.4, 0.4, 0.3, 0.3, 0.2, -0.2, -0.4}}, {"Windspeed", {3.6, 3.8, 3.8, 4.4, 4.5, 4.8, 4.2}}};
-        createChart("combined",  getTrafficDataType(), j, weather, getWeatherDataType());
+
+
     }
 
 }
@@ -401,6 +543,8 @@ QString MainWindow::getWeatherDataType()
         return "observed";
     } else if (weatherDataTypeDropDownIndex == 1) {
         return "forecast";
+    }else if (weatherDataTypeDropDownIndex == 2) {
+        return "lastMonth";
     }
     return NULL;
 }
@@ -494,6 +638,13 @@ void MainWindow::on_timelineDropDown_activated(int index)
  */
 void MainWindow::on_datatypeDropDown_activated(int index)
 {
+    if(ui->datatypeDropDown->currentText() == "Monthly Averages")
+    {
+        ui->timelineDropDown->setDisabled(true);
+    }else
+    {
+        ui->timelineDropDown->setDisabled(false);
+    }
     if (ui->trafficButton->isChecked()) {
         trafficDataTypeDropDownIndex = index;
     } else {

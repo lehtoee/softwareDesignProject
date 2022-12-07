@@ -3,8 +3,9 @@
 #include <string>
 
 
-Controller::Controller(NetworkHandler* networkhandler)
-    : networkhandler_(networkhandler)
+Controller::Controller(NetworkHandler* networkhandler, MainWindow* view)
+    : networkhandler_(networkhandler),
+    view_(view)
 {
     std::unordered_map<QString, QString> digitrafficData;
     //timeNDate timeDate;
@@ -12,25 +13,46 @@ Controller::Controller(NetworkHandler* networkhandler)
     std::unordered_map<QString, QString> trafficmessages;
     std::unordered_map<QString, QString> maintenance;
     std::unordered_map<QString, QString> roadconditions;
+
+    connect(view_, &MainWindow::fetchDigiTraffic, this, &Controller::pushButtonClicked);
+    connect(view_, &MainWindow::fetchFMI, this, &Controller::pushButtonClicked);
+
+    connect(networkhandler_, &NetworkHandler::jsonReady, this, &Controller::createDigiTrafficChart);
+    connect(networkhandler_, &NetworkHandler::xmlReady, this, &Controller::createFMIChart);
 }
 
 Controller::~Controller()
 {
     delete networkhandler_;
+    delete view_;
 }
 
 void Controller::pushButtonClicked(QString source, QString datatype,
                                    QString location, QString time )
 {
     // Get the start and end time of
-    std::tuple<QString, QString> startNendTime = parseTimeDate("6");
+    std::tuple<QString, QString> startNendTime = parseTimeDate(time, datatype);
     qDebug() << get<0>(startNendTime) + " - " + get<1>(startNendTime);
-    networkhandler_->fetchDataXML("weatherObserved", "Tampere", startNendTime);
+    if(source == "FMI"){
+        networkhandler_->fetchDataXML(datatype, location, startNendTime);
+    }
+    else{
+        networkhandler_->fetchDataJson(datatype, location, time);
 
-    networkhandler_->fetchDataJson(datatype, location, time);
-    QJsonObject jsonData = networkhandler_->getJsonData();
-    //some async stuff would be needed here
-    //parseDigitrafficData(jsonData, datatype);
+    }
+
+}
+
+void Controller::createDigiTrafficChart(std::unordered_map<QString, QString> data, QString datatype, std::vector<QString> coordinates, QString time)
+{
+    //std::unordered_map<QString, QString> data = networkhandler_->getJsonData();
+    view_->createChart("traffic", datatype, data, {}, datatype, "observed");
+    //view_.&MainWindow::createChart("traffic", "maintenance", data, {});
+}
+
+void Controller::createFMIChart(std::unordered_map<QString, std::vector<double> > data, QString datatype)
+{
+    view_->createChart("weather", datatype, {}, data, "", "");
 }
 
 
@@ -45,11 +67,11 @@ std::unordered_map<QString, QString> Controller::getData(QString type)
             {"winterSlipperiness", ""},
             {"overallRoadCondition", "NORMAL_CONDITION"},
             {"weatherSymbol", "n300"},
-          {"roadCondition", "DRY"},
-          {"roadTemperature", "+17"},
-          {"temperature", "+13"},
-          {"windSpeed", "2.0"},
-          {"windDirection", "45"}
+            {"roadCondition", "DRY"},
+            {"roadTemperature", "+17"},
+            {"temperature", "+13"},
+            {"windSpeed", "2.0"},
+            {"windDirection", "45"}
         };
         return roadconditions;
     }
@@ -66,7 +88,7 @@ std::unordered_map<QString, QString> Controller::getData(QString type)
 
 
 
-std::tuple<QString, QString> Controller::parseTimeDate(QString t)
+std::tuple<QString, QString> Controller::parseTimeDate(QString t, QString type)
 {
     char format [50];
     time_t currentTime = time(0);
@@ -74,58 +96,175 @@ std::tuple<QString, QString> Controller::parseTimeDate(QString t)
 
     localTime->tm_hour -= 2;
 
-    if (t == "2"){
+    if (type == "observed"){
 
-        strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
-        QString endtime = format;
-        if (localTime->tm_hour < 2){
-            int diff = localTime->tm_hour - 2;
-            localTime->tm_hour = 24 - diff;
+        if (t == "2"){
+
+            strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
+            QString endtime = format;
+            if (localTime->tm_hour < 2){
+                int diff = localTime->tm_hour - 2;
+                localTime->tm_hour = 24 - diff;
+                localTime->tm_mday -= 1;
+            }
+            else{
+                localTime->tm_hour -= 2;
+            }
+            strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
+            QString starttime = format;
+
+            return std::tuple<QString, QString>{starttime, endtime};
+        }
+
+        else if (t == "4"){
+
+            strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
+            QString endtime = format;
+            if (localTime->tm_hour < 4){
+                int diff = localTime->tm_hour - 4;
+                localTime->tm_hour = 24 - diff;
+                localTime->tm_mday -= 1;
+            }
+            else{
+                localTime->tm_hour -= 4;
+            }
+            strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
+            QString starttime = format;
+
+            return std::tuple<QString, QString>{starttime, endtime};
+        }
+
+        else if (t == "6"){
+            strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
+            QString endtime = format;
+            if (localTime->tm_hour < 6){
+                int diff = localTime->tm_hour - 6;
+                localTime->tm_hour = 24 - diff;
+                localTime->tm_mday -= 1;
+            }
+            else{
+                localTime->tm_hour -= 6;
+            }
+            strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
+            QString starttime = format;
+
+            return std::tuple<QString, QString>{starttime, endtime};
+
+        }
+        else if (t == "12") {
+            strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
+            QString endtime = format;
+            if (localTime->tm_hour < 12){
+                int diff = localTime->tm_hour - 12;
+                localTime->tm_hour = 24 - diff;
+                localTime->tm_mday -= 1;
+            }
+            else{
+                localTime->tm_hour -= 12;
+            }
+            strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
+            QString starttime = format;
+
+            return std::tuple<QString, QString>{starttime, endtime};
+
+        }
+        else if (t=="24"){
+            strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
+            QString endtime = format;
             localTime->tm_mday -= 1;
-        }
-        else{
-            localTime->tm_hour -= 2;
-        }
-        strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
-        QString starttime = format;
+            strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
+            QString starttime = format;
 
-        return std::tuple<QString, QString>{starttime, endtime};
-    }
-    else if (t == "6"){
-        strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
-        QString endtime = format;
-        if (localTime->tm_hour < 6){
-            int diff = localTime->tm_hour - 6;
-            localTime->tm_hour = 24 - diff;
-            localTime->tm_mday -= 1;
+            return std::tuple<QString, QString>{starttime, endtime};
         }
-        else{
-            localTime->tm_hour -= 6;
+        else if(t=="1m"){
+            strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
+            QString endtime = format;
+            localTime->tm_mon -= 1;
+            strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
+            QString starttime = format;
         }
-        strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
-        QString starttime = format;
-
-        return std::tuple<QString, QString>{starttime, endtime};
-
-    }
-    else if (t == "12") {
-        strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
-        QString endtime = format;
-        if (localTime->tm_hour < 12){
-            int diff = localTime->tm_hour - 12;
-            localTime->tm_hour = 24 - diff;
-            localTime->tm_mday -= 1;
-        }
-        else{
-            localTime->tm_hour -= 12;
-        }
-        strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
-        QString starttime = format;
-
-        return std::tuple<QString, QString>{starttime, endtime};
-
     }
     else {
+        if (t == "2"){
 
+            strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
+            QString endtime = format;
+            if (localTime->tm_hour > 24 - 2){
+                int diff = localTime->tm_hour + 2 - 24;
+                localTime->tm_hour = diff;
+                localTime->tm_mday += 1;
+            }
+            else{
+                localTime->tm_hour += 2;
+            }
+            strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
+            QString starttime = format;
+
+            return std::tuple<QString, QString>{endtime, starttime};
+        }
+
+        else if (t == "4"){
+
+            strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
+            QString endtime = format;
+            if (localTime->tm_hour > 24 - 4){
+                int diff = localTime->tm_hour + 4 - 24;
+                localTime->tm_hour = diff;
+                localTime->tm_mday += 1;
+            }
+            else{
+                localTime->tm_hour += 4;
+            }
+            strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
+            QString starttime = format;
+
+            return std::tuple<QString, QString>{endtime, starttime};
+        }
+
+
+        else if (t == "6"){
+            strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
+            QString endtime = format;
+            if (localTime->tm_hour > 24 - 6){
+                int diff = localTime->tm_hour + 6 - 24;
+                localTime->tm_hour = diff;
+                localTime->tm_mday += 1;
+            }
+            else{
+                localTime->tm_hour += 6;
+            }
+            strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
+            QString starttime = format;
+
+            return std::tuple<QString, QString>{endtime, starttime};
+
+        }
+        else if (t == "12") {
+            strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
+            QString endtime = format;
+            if (localTime->tm_hour > 24 - 12){
+                int diff = localTime->tm_hour + 12 - 24;
+                localTime->tm_hour = diff;
+                localTime->tm_mday += 1;
+            }
+            else{
+                localTime->tm_hour += 12;
+            }
+            strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
+            QString starttime = format;
+
+            return std::tuple<QString, QString>{endtime, starttime};
+
+        }
+        else if (t=="24"){
+            strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
+            QString endtime = format;
+            localTime->tm_mday += 1;
+            strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
+            QString starttime = format;
+
+            return std::tuple<QString, QString>{endtime, starttime};
+        }
     }
 }

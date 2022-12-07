@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <QMainWindow>
-#include <controller.h>
 #include <QtWidgets/QMainWindow>
 #include <QtCharts/QChartView>
 #include <QtCharts/QBarSet>
@@ -28,15 +27,20 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(Controller *controller, QWidget *parent = nullptr);
+    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     int locationDropDownIndex;
     int timelineDropDownIndex;
     int weatherDataTypeDropDownIndex;
     int trafficDataTypeDropDownIndex;
 
+    void createChart(QString, QString, unordered_map<QString, QString>, unordered_map<QString, vector<double>>, QString, QString);
+
+signals:
+    void fetchDigiTraffic(QString source, QString datatype, QString location, QString time);
+    void fetchFMI(QString source, QString datatype, QString location, QString time);
+
 private slots:
-    void createChart(QString, QString, unordered_map<QString, QString>, unordered_map<QString, vector<double>>, QString);
 
     void onFetchDataButtonClicked();
 
@@ -64,13 +68,13 @@ private slots:
 
 private:
     QChartView * createTrafficMaintanaceChart(unordered_map<QString, QString>, int);
-    QChartView * createTraffcRoadconditionsChart(unordered_map<QString, QString>, int);
+    QWidget * createTraffcRoadconditionsChart(unordered_map<QString, QString>, int);
+    QChartView * createMonthlyWeatherChart(unordered_map<QString, vector<double>>, int);
     QChartView * createWeatherChart(unordered_map<QString, vector<double>>, QString, int);
     QString getWeatherDataType();
     QString getTrafficDataType();
 
     Ui::MainWindow *ui;
-    Controller* controller_;
 };
 
 #endif // MAINWINDOW_H

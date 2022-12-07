@@ -17,7 +17,8 @@ public:
     QString getGeoID(QString location);
     std::unordered_map<QString, std::vector<double>> parseXML(QString content);
     std::unordered_map<QString, QString> parseJson(QJsonObject jsonData, QString datatype,
-                                                    std::vector<QString> coordinates, QString time);
+                                                   std::vector<QString> coordinates, QString time);
 };
 
 #endif // UTILS_H
+

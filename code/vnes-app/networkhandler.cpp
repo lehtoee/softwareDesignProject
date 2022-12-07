@@ -42,7 +42,7 @@ void NetworkHandler::fetchDataJson(QString datatype, QString location, QString t
     manager->get(request);
 }
 
-QJsonObject NetworkHandler::getJsonData()
+std::unordered_map<QString, QString> NetworkHandler::getJsonData()
 {
     return jsonData_;
 }
@@ -62,7 +62,9 @@ void NetworkHandler::jsonFetchFinished(QNetworkReply *reply)
     QByteArray input = reply->readAll();
     QJsonDocument document = QJsonDocument::fromJson(input);
     QJsonObject jsonObj = document.object();
-    std::unordered_map<QString, QString> digitrafficData = utilities->parseJson(jsonObj, datatype_, coordinates_, time_);
+    jsonData_ = utilities->parseJson(jsonObj, datatype_, coordinates_, time_);
+
+    emit jsonReady(jsonData_, datatype_, coordinates_, time_);
 
 }
 
@@ -76,19 +78,24 @@ void NetworkHandler::fetchDataXML(QString datatype, QString location, std::tuple
     QString GeoID = utilities->getGeoID(location);
     QString baseURL = "https://opendata.fmi.fi/wfs?request=getFeature&version=2.0.0&storedquery_id=fmi";
     QString URLstring;
+    datatype_ = datatype;
 
-    if(datatype == "weatherObserved"){
+    if(datatype == "observed"){
         URLstring = baseURL+"::observations::weather::hourly::simple&geoid="+GeoID+
-                "&starttime="+std::get<0>(time)+"&endtime="+std::get<1>(time)+"&timestep=30&parameters=t2m,ws_10min";
+                    "&starttime="+std::get<0>(time)+"&endtime="+std::get<1>(time)+"&timestep=30&parameters=t2m,ws_10min";
         qDebug() << URLstring;
     }
-    else if(datatype == "weatherForecast") {
+    else if(datatype == "forecast") {
         URLstring = baseURL+"::forecast::harmonie::surface::point::simple&geoid="+GeoID+
-                "&starttime="+std::get<0>(time)+"&endtime="+std::get<1>(time)+"&timestep=30&parameters=temperature,windspeedms";
+                    "&starttime="+std::get<0>(time)+"&endtime="+std::get<1>(time)+"&timestep=30&parameters=temperature,windspeedms";
         qDebug()<<URLstring;
     }
-    else {
-        URLstring = "";
+    else if(datatype == "lastMonth") {
+        URLstring = baseURL+"::observations::weather::daily::simple&geoid="+GeoID+"&parameters=tday,tmax,tmin";
+        qDebug() << URLstring;
+    }
+    else{
+        return;
     }
     const QUrl url = QUrl(URLstring);
     QNetworkRequest request(url);
@@ -106,7 +113,5 @@ void NetworkHandler::XMLFetchFinished(QNetworkReply *reply)
     QByteArray byteArrayContent = reply->readAll();
     QString content = QString(byteArrayContent);
     std::unordered_map<QString, std::vector<double>> FMIdata = utilities->parseXML(content);
-    qDebug() << "tänne";
+    emit xmlReady(FMIdata, datatype_);
 }
-
-
