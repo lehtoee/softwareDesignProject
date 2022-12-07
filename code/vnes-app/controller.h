@@ -22,6 +22,7 @@ public:
     void pushButtonClicked(QString source, QString datatype,
                            QString location, QString time);
     void createDigiTrafficChart(std::unordered_map<QString, QString> data, QString datatype, std::vector<QString> coordinates, QString time);
+    void createFMIChart(std::unordered_map<QString, std::vector<double>> data, QString datatype);
     void parseFMIData(QString datatype);
     std::unordered_map<QString, QString> getData(QString type);
 

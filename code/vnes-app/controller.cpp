@@ -49,6 +49,11 @@ void Controller::createDigiTrafficChart(std::unordered_map<QString, QString> dat
     //view_.&MainWindow::createChart("traffic", "maintenance", data, {});
 }
 
+void Controller::createFMIChart(std::unordered_map<QString, std::vector<double> > data, QString datatype)
+{
+    QString contentType = ("weather");
+}
+
 
 std::unordered_map<QString, QString> Controller::getData(QString type)
 {

@@ -360,31 +360,30 @@ void MainWindow::onFetchDataButtonClicked()
             dataType = "roadconditions";
         }
         //unordered_map<QString, QString> j = controller_->getData(dataType);
-
+        emit fetchDigiTraffic("maintenance", dataType, "Turku", "4");
         //createChart("traffic", dataType, j, {});
     }else if(ui->dataLabel->text() == "Weather Data")
     {
+        QString source = "FMI";
         QString dataType;
         if(ui->datatypeDropDown->currentText() == "Observed Temperature & Wind")
         {
             dataType = "observed";
-            unordered_map<QString, vector<double>> j = {{"Temperature", {0.3, 0.3, 0.2, 0.2, 0.1, -0.1, -0.3}}, {"Windspeed", {3.5, 3.7, 3.7, 4.3, 4.4, 4.7, 4.1}}};
-            //createChart("weather", dataType, {}, j);
+
         }else if(ui->datatypeDropDown->currentText() == "Predicted Temperature & Wind")
         {
             dataType = "forecast";
-            unordered_map<QString, vector<double>> j = {{"Temperature", {0.4, 0.4, 0.3, 0.3, 0.2, -0.2, -0.4}}, {"Windspeed", {3.6, 3.8, 3.8, 4.4, 4.5, 4.8, 4.2}}};
-            //createChart("weather", dataType, {}, j);
-        }
 
+        }
+        emit fetchFMI("FMI", "lastMonth", "Tampere", "4");
     }else if(ui->dataLabel->text() == "Combined Data")
     {
         //unordered_map<QString, QString> j = controller_->getData("maintenance");
         unordered_map<QString, vector<double>> weather = {{"Temperature", {0.4, 0.4, 0.3, 0.3, 0.2, -0.2, -0.4}}, {"Windspeed", {3.6, 3.8, 3.8, 4.4, 4.5, 4.8, 4.2}}};
         //createChart("combined", "maintenance", j, weather, getTraficDataType(), getWeatherDataType());
     }
-    emit fetchDigiTraffic("maintenance", dataType, "Turku", "4");
-    emit fetchFMI("FMI", "lastMonth", "Tampere", "4");
+
+
 }
 
 QString MainWindow::getWeatherDataType()
