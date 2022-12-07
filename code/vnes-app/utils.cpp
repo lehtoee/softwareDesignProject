@@ -91,10 +91,10 @@ std::unordered_map<QString, QString> utils::parseJson(QJsonObject jsonData, QStr
              .value("roadTemperature").toString();
         QString temperature = roadConditions[forecast].toObject()
              .value("temperature").toString();
-        QString windSpeed = roadConditions[forecast].toObject()
-             .value("windSpeed").toString();
-        QString windDirection = roadConditions[forecast].toObject()
-             .value("windDirection").toString();
+        QString windSpeed = QString::number(roadConditions[forecast].toObject()
+             .value("windSpeed").toInt());
+        QString windDirection = QString::number(roadConditions[forecast].toObject()
+             .value("windDirection").toInt());
         QString weatherSymbol = roadConditions[forecast].toObject()
              .value("weatherSymbol").toString();
 
