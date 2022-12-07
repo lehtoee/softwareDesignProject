@@ -18,6 +18,7 @@ Controller::Controller(NetworkHandler* networkhandler, MainWindow* view)
     connect(view_, &MainWindow::fetchFMI, this, &Controller::pushButtonClicked);
 
     connect(networkhandler_, &NetworkHandler::jsonReady, this, &Controller::createDigiTrafficChart);
+    connect(networkhandler_, &NetworkHandler::xmlReady, this, &Controller::createFMIChart);
 }
 
 Controller::~Controller()
@@ -52,6 +53,7 @@ void Controller::createDigiTrafficChart(std::unordered_map<QString, QString> dat
 void Controller::createFMIChart(std::unordered_map<QString, std::vector<double> > data, QString datatype)
 {
     QString contentType = ("weather");
+    qDebug() << contentType;
 }
 
 
