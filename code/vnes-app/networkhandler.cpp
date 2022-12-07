@@ -112,6 +112,7 @@ void NetworkHandler::XMLFetchFinished(QNetworkReply *reply)
     QByteArray byteArrayContent = reply->readAll();
     QString content = QString(byteArrayContent);
     std::unordered_map<QString, std::vector<double>> FMIdata = utilities->parseXML(content);
+    qDebug() << FMIdata["temperature"];
     emit xmlReady(FMIdata, datatype_);
 }
 

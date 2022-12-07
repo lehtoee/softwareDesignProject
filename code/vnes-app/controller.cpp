@@ -31,10 +31,10 @@ void Controller::pushButtonClicked(QString source, QString datatype,
                                    QString location, QString time )
 {
     // Get the start and end time of
-    std::tuple<QString, QString> startNendTime = parseTimeDate("6", "forecast");
+    std::tuple<QString, QString> startNendTime = parseTimeDate("6", "observation");
     qDebug() << get<0>(startNendTime) + " - " + get<1>(startNendTime);
     if(source == "FMI"){
-        networkhandler_->fetchDataXML("lastMonth", "Tampere", startNendTime);
+        networkhandler_->fetchDataXML("weatherObserved", "Tampere", startNendTime);
     }
     else{
         networkhandler_->fetchDataJson(datatype, location, time);
@@ -53,7 +53,7 @@ void Controller::createDigiTrafficChart(std::unordered_map<QString, QString> dat
 void Controller::createFMIChart(std::unordered_map<QString, std::vector<double> > data, QString datatype)
 {
     QString contentType = ("weather");
-    qDebug() << contentType;
+    qDebug() << data["temperature"];
 }
 
 
