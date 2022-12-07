@@ -22,7 +22,7 @@ class NetworkHandler : public QObject
 public:
     NetworkHandler(QObject* parent = nullptr);
 
-    void fetchDataJson(QString datatype, QString location, QString time);
+    void fetchDataJson(QString datatype, QString location, QString time, std::tuple<QString, QString> startEndTime);
     std::unordered_map<QString, QString> getJsonData();
     void fetchDataXML(QString datatype, QString location, std::tuple<QString, QString> time);
 

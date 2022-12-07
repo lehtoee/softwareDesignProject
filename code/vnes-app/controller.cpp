@@ -37,12 +37,12 @@ void Controller::pushButtonClicked(QString source, QString datatype,
         networkhandler_->fetchDataXML(datatype, location, startNendTime);
     }
     else if(source == "digitraffic"){
-        networkhandler_->fetchDataJson(datatype, location, time);
+        networkhandler_->fetchDataJson(datatype, location, time, startNendTime);
 
     }
     else {
         networkhandler_->fetchDataXML(datatype, location, startNendTime);
-        networkhandler_->fetchDataJson(datatype, location, time);
+        networkhandler_->fetchDataJson(datatype, location, time, startNendTime);
     }
 
 }

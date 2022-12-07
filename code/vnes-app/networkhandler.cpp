@@ -8,7 +8,7 @@ NetworkHandler::NetworkHandler(QObject *parent):
     utils *utilities = new utils;
 }
 
-void NetworkHandler::fetchDataJson(QString datatype, QString location, QString time)
+void NetworkHandler::fetchDataJson(QString datatype, QString location, QString time, std::tuple<QString, QString> startEndTime)
 {
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
     connect(manager, &QNetworkAccessManager::finished, this, &NetworkHandler::jsonFetchFinished);
@@ -16,12 +16,11 @@ void NetworkHandler::fetchDataJson(QString datatype, QString location, QString t
     datatype_ = datatype;
     coordinates_ = utilities->getCoordinates(location);
     time_ = time;
-
+qDebug() << get<0>(startEndTime) + " - " + get<1>(startEndTime);
     QString myurl = "https://tie.digitraffic.fi/api/";
     if(datatype == "maintenance"){
-        QString qstrtime = time;
         myurl = myurl + "maintenance/v1/tracking/routes?endFrom="
-                + "2022-01-19T09%3A00%3A00Z" + "&endBefore=" + "2022-01-19T10%3A00%3A00Z" + "&xMin="
+                + get<0>(startEndTime) + "&endBefore=" + get<1>(startEndTime) + "&xMin="
                 + coordinates_[0] + "&yMin=" + coordinates_[1] + "&xMax="
                 + coordinates_[2] + "&yMax=" + coordinates_[3]
                 + "&taskId=&domain=state-roads";
