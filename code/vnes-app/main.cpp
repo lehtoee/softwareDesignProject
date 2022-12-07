@@ -31,7 +31,6 @@ int main(int argc, char *argv[])
  *  -Yhdistetään chartcreation controllerissa
  *  -Combined datan lähetys
  *  -siivousta + dokumentaatiota
- *  -Coordinaattien korjausta
  *  -Trafficmessages fronttiin
  *
  * */

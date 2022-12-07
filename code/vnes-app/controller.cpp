@@ -38,7 +38,6 @@ void Controller::pushButtonClicked(QString source, QString datatype,
     }
     else if(source == "digitraffic"){
         networkhandler_->fetchDataJson(datatype, location, time, startNendTime);
-
     }
     else {
         networkhandler_->fetchDataXML(datatype, location, startNendTime);
@@ -49,50 +48,19 @@ void Controller::pushButtonClicked(QString source, QString datatype,
 
 void Controller::createDigiTrafficChart(std::unordered_map<QString, QString> data, QString datatype, std::vector<QString> coordinates, QString time)
 {
-    //std::unordered_map<QString, QString> data = networkhandler_->getJsonData();
     view_->createChart("traffic", datatype, data, {}, datatype, "observed");
-    //view_.&MainWindow::createChart("traffic", "maintenance", data, {});
 }
 
 void Controller::createFMIChart(std::unordered_map<QString, std::vector<double> > data, QString datatype)
 {
-
     view_->createChart("weather", datatype, {}, data, "", "");
-
 }
 
-
-std::unordered_map<QString, QString> Controller::getData(QString type)
+void Controller::createCombinedChart(std::unordered_map<QString, std::vector<double>> FMIdata,
+                                    std::unordered_map<QString, std::vector<double>> digiTrafficData, QString datatype)
 {
-    if(type=="trafficmessages"){
-        trafficmessages = {{"count", "5"}};
-        return trafficmessages;
-    }
-    else if(type=="roadconditions"){
-        roadconditions = {{"precipitationCondition", "NO_RAIN_DRY_WEATHER"},
-            {"winterSlipperiness", ""},
-            {"overallRoadCondition", "NORMAL_CONDITION"},
-            {"weatherSymbol", "n300"},
-            {"roadCondition", "DRY"},
-            {"roadTemperature", "+17"},
-            {"temperature", "+13"},
-            {"windSpeed", "2.0"},
-            {"windDirection", "45"}
-        };
-        return roadconditions;
-    }
-    else if(type=="maintenance"){
-        maintenance = {{"task1", "LINE_SANDING"},
-                       {"task2", "ROAD_STATE_CHECKING"},
-                       {"task3", "ROAD_STATE_CHECKING"},
-                       {"task4", "BRUSHING"},
-                       {"task5", "CLEANSING_OF_BRIDGES"}};
-        return maintenance;
-    }
-    return digitrafficData;
+    view_->createChart("weather", datatype, {}, FMIdata, "", "");
 }
-
-
 
 std::tuple<QString, QString> Controller::parseTimeDate(QString t, QString type)
 {

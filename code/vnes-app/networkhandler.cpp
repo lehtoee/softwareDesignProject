@@ -16,7 +16,7 @@ void NetworkHandler::fetchDataJson(QString datatype, QString location, QString t
     datatype_ = datatype;
     coordinates_ = utilities->getCoordinates(location);
     time_ = time;
-qDebug() << get<0>(startEndTime) + " - " + get<1>(startEndTime);
+
     QString myurl = "https://tie.digitraffic.fi/api/";
     if(datatype == "maintenance"){
         myurl = myurl + "maintenance/v1/tracking/routes?endFrom="
@@ -49,14 +49,6 @@ std::unordered_map<QString, QString> NetworkHandler::getJsonData()
 
 void NetworkHandler::jsonFetchFinished(QNetworkReply *reply)
 {
-    if(reply->error()){
-        qDebug() << "error";
-        qDebug() << reply->errorString();
-        return;
-    }
-    qDebug() << "fetch ok";
-
-
     //convert to Json object
     QByteArray input = reply->readAll();
     QJsonDocument document = QJsonDocument::fromJson(input);

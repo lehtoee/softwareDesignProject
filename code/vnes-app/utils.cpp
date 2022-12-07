@@ -109,7 +109,6 @@ std::unordered_map<QString, QString> utils::parseJson(QJsonObject jsonData, QStr
             {"windDirection", windDirection}
         });
 
-
     }
     else if(datatype == "trafficmessages"){
 
