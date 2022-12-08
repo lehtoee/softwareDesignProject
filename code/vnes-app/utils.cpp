@@ -80,14 +80,17 @@ std::unordered_map<QString, QString> utils::parseJson(QJsonObject jsonData, QStr
 
     if(datatype == "maintenance"){
         QJsonArray maintenanceFeatures = jsonData["features"].toArray();
-        //variable for making unique key for the datastructure
-        int counter = 1;
-        //every maintenance task from the data inserted into the datastructure
+
         for(auto ele : maintenanceFeatures){
+
             QString task = ele.toObject().value("properties")
                                .toObject().value("tasks")[0].toString();
-            digitrafficData.insert({"task" + QString::number(counter), task});
-            counter++;
+            auto it = digitrafficData.find(task);
+            //preventing duplicate maintenance tasks to be inserted
+            if(it == digitrafficData.end()){
+                digitrafficData.insert({task, task});
+            }
+
         }
     }
     else if(datatype == "roadconditions"){

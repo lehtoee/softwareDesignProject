@@ -87,29 +87,10 @@ QChartView * MainWindow::createTrafficMaintanaceChart(unordered_map<QString, QSt
         series->append("No maintenance", 1);
     }else
     {
-        // Preventing getting multiples of the same maintenance task in the chart
-        vector<QString> maint;
-        for(auto e: data)
-        {
-            bool duplicate = false;
-            for(auto d: maint)
-            {
-                if(d == e.second)
-                {
-                    duplicate = true;
-                    break;
-                }
-            }
-            if(duplicate)
-            {
-                continue;
-            }
-            maint.push_back(e.second);
-        }
         // Adding data to piechart
-        for(auto ele: maint)
+        for(auto ele: data)
         {
-            series->append(ele, 0.2);
+            series->append(ele.second, 0.2);
         }
         for(int i = 0; i < series->slices().count(); i++)
         {
