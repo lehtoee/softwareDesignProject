@@ -18,6 +18,7 @@
 #include <QPushButton>
 #include <unordered_map>
 #include <QVBoxLayout>
+#include <QDateTimeAxis>
 
 
 using namespace std;
@@ -182,7 +183,7 @@ QChartView *MainWindow::createMonthlyWeatherChart(unordered_map<QString , vector
     QChart *chart = new QChart();
     QValueAxis *axisX = new QValueAxis();
     axisX->setTitleText("Day");
-    axisX->setTickCount(int(30));
+    axisX->setTickCount(30);
     chart->addAxis(axisX, Qt::AlignBottom);
 
     //Avg temp
@@ -192,7 +193,6 @@ QChartView *MainWindow::createMonthlyWeatherChart(unordered_map<QString , vector
     for(auto t: avg)
     {
         avgl_series->append(i, t);
-        qDebug() << avgl_series->at(i);
         i++;
     }
     avgl_series->setName("Average Temperature");
@@ -223,6 +223,7 @@ QChartView *MainWindow::createMonthlyWeatherChart(unordered_map<QString , vector
     maxl_series->attachAxis(axisX);
     maxl_series->attachAxis(axisY);
 
+
     //Min temp
     QLineSeries *minl_series = new QLineSeries();
     vector<double> min = weatherData["mintemp"];
@@ -236,7 +237,6 @@ QChartView *MainWindow::createMonthlyWeatherChart(unordered_map<QString , vector
     chart->addSeries(minl_series);
     minl_series->setPen(QPen (Qt::blue));
     minl_series->attachAxis(axisX);
-    minl_series->attachAxis(axisY);
 
     QFont font;
     font.setPixelSize(fontSize);
@@ -380,40 +380,22 @@ void MainWindow::createChart(QString contentType, QString dataType, unordered_ma
     } else if(contentType == "combined")
     {
         //Traffic
-        if(dataType == "maintenance")
-        {
-            QChartView *chartView = createTrafficMaintanaceChart(data, 18);
-            chartView->resize(500, 300);
+        QChartView *chartView = createTrafficMaintanaceChart(data, 18);
+        chartView->resize(500, 300);
 
-            //Weather
-            QChartView *chartView1 = createWeatherChart(weatherData, weatherDataType, 18);
-            if (chartView == nullptr) { return; }
-            chartView1->resize(500, 300);
+        //Weather
+        QChartView *chartView1 = createWeatherChart(weatherData, "observed", 18);
+        if (chartView == nullptr) { return; }
+        chartView1->resize(500, 300);
 
-            QWidget *window = new QWidget;
-            QVBoxLayout *layout = new QVBoxLayout(window);
-            layout->addWidget(chartView);
-            layout->addWidget(chartView1);
-            window->resize(1000, 600);
-            window->show();
+        QWidget *window = new QWidget;
+        QVBoxLayout *layout = new QVBoxLayout(window);
+        layout->addWidget(chartView);
+        layout->addWidget(chartView1);
+        window->resize(1000, 600);
+        window->show();
 
-        } else if(dataType == "roadconditions")
-        {
-            QWidget *chartView =createTraffcRoadconditionsChart(data, 18);
-            chartView->resize(500, 300);
 
-            //Weather
-            QChartView *chartView1 = createWeatherChart(weatherData, weatherDataType, 18);
-            if (chartView == nullptr) { return; }
-            chartView1->resize(500, 300);
-
-            QWidget *window = new QWidget;
-            QVBoxLayout *layout = new QVBoxLayout(window);
-            layout->addWidget(chartView);
-            layout->addWidget(chartView1);
-            window->resize(1000, 600);
-            window->show();
-        } else { return; }
 
     }
 
@@ -525,7 +507,11 @@ void MainWindow::onFetchDataButtonClicked()
         emit fetchFMI(source, weatherDataType, city, time);
     }else if(ui->combinedButton->isChecked())
     {
-
+        QString source = "combined";
+        QString city = ui->locationDropDown->currentText();
+        QString time = ui->timelineDropDown->currentText();
+        time.replace(" hours", "");
+        emit fetchFMI(source, "", city, time);
 
     }
 
@@ -572,6 +558,7 @@ QString MainWindow::getTrafficDataType()
  */
 void MainWindow::on_trafficButton_clicked()
 {
+  ui->timelineDropDown->setDisabled(false);
   ui->weatherButton->setChecked(false);
   ui->combinedButton->setChecked(false);
   ui->dataLabel->setText("Traffic Data");
@@ -601,6 +588,7 @@ void MainWindow::on_weatherButton_clicked()
  */
 void MainWindow::on_combinedButton_clicked()
 {
+  ui->timelineDropDown->setDisabled(false);
   ui->trafficButton->setChecked(false);
   ui->weatherButton->setChecked(false);
   ui->dataLabel->setText("Combined Data");

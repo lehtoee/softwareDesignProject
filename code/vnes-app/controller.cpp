@@ -57,9 +57,9 @@ void Controller::createFMIChart(std::unordered_map<QString, std::vector<double> 
 }
 
 void Controller::createCombinedChart(std::unordered_map<QString, std::vector<double>> FMIdata,
-                                    std::unordered_map<QString, std::vector<double>> digiTrafficData, QString datatype)
+                                    std::unordered_map<QString, QString> digiTrafficData, QString datatype)
 {
-    view_->createChart("weather", datatype, {}, FMIdata, "", "");
+    view_->createChart("combined", datatype, digiTrafficData, FMIdata, "", "");
 }
 
 std::tuple<QString, QString> Controller::parseTimeDate(QString t, QString type)

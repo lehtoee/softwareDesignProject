@@ -24,7 +24,7 @@ public:
     void createDigiTrafficChart(std::unordered_map<QString, QString> data, QString datatype, std::vector<QString> coordinates, QString time);
     void createFMIChart(std::unordered_map<QString, std::vector<double>> data, QString datatype);
     void createCombinedChart(std::unordered_map<QString, std::vector<double>> FMIdata,
-                             std::unordered_map<QString, std::vector<double>> digiTrafficData, QString datatype);
+                             std::unordered_map<QString, QString> digiTrafficData, QString datatype);
     void parseFMIData(QString datatype);
 
     void getTimeDate();
