@@ -376,6 +376,15 @@ void MainWindow::createChart(QString contentType, QString dataType, unordered_ma
             layout->addWidget(chartView);
             window->resize(1000, 600);
             window->show();
+        }else if(dataType == "trafficmessages")
+        {
+            QWidget *window = new QWidget;
+            QVBoxLayout *layout = new QVBoxLayout(window);
+            QLabel *count = new QLabel();
+            count->setText("Traffic messages count: " + data["count"]);
+            layout->addWidget(count);
+            window->resize(200, 100);
+            window->show();
         }
         // Weather chart
     }else if(contentType == "weather")
@@ -459,6 +468,7 @@ void MainWindow::setTrafficDataDropDowns()
     ui->datatypeDropDown->clear();
     ui->datatypeDropDown->addItem("Road Maintenance");
     ui->datatypeDropDown->addItem("Road Condition Forecast");
+    ui->datatypeDropDown->addItem("Traffic messages");
     ui->datatypeDropDown->setCurrentIndex(trafficDataTypeDropDownIndex);
     ui->datatypeDropDown->show();
 }
@@ -560,6 +570,8 @@ QString MainWindow::getTrafficDataType()
         return "maintenance";
     } else if (trafficDataTypeDropDownIndex == 1) {
         return "roadconditions";
+    }else if (trafficDataTypeDropDownIndex == 2) {
+        return "trafficmessages";
     }
     return NULL;
 }
