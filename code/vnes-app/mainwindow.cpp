@@ -18,7 +18,6 @@
 #include <QPushButton>
 #include <unordered_map>
 #include <QVBoxLayout>
-#include <QDateTimeAxis>
 
 
 using namespace std;
@@ -82,14 +81,35 @@ MainWindow::~MainWindow()
 QChartView * MainWindow::createTrafficMaintanaceChart(unordered_map<QString, QString> data, int fontSize)
 {
     QPieSeries *series = new QPieSeries();
+    // No maintenance recorded
     if(data.size() == 0)
     {
         series->append("No maintenance", 1);
     }else
     {
-        for(auto ele: data)
+        // Preventing getting multiples of the same maintenance task in the chart
+        vector<QString> maint;
+        for(auto e: data)
         {
-            series->append(ele.second, 0.2);
+            bool duplicate = false;
+            for(auto d: maint)
+            {
+                if(d == e.second)
+                {
+                    duplicate = true;
+                    break;
+                }
+            }
+            if(duplicate)
+            {
+                continue;
+            }
+            maint.push_back(e.second);
+        }
+        // Adding data to piechart
+        for(auto ele: maint)
+        {
+            series->append(ele, 0.2);
         }
         for(int i = 0; i < series->slices().count(); i++)
         {
@@ -106,7 +126,7 @@ QChartView * MainWindow::createTrafficMaintanaceChart(unordered_map<QString, QSt
     chart->legend()->show();
     chart->setAnimationOptions(QChart::AllAnimations);
 
-
+    // Creating chartview from chart
     QChartView *chartView = new QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
     chartView->resize(750, 520);
@@ -122,8 +142,8 @@ QChartView * MainWindow::createTrafficMaintanaceChart(unordered_map<QString, QSt
     Traffic data
  * @param fontSize
     Font size for the title
- * @return *QChartView
-    Created chart
+ * @return *QWidget
+    Created BoxLayout of road condition data
  */
 QWidget * MainWindow::createTraffcRoadconditionsChart(unordered_map<QString, QString> data, int fontSize)
 {
@@ -136,6 +156,7 @@ QWidget * MainWindow::createTraffcRoadconditionsChart(unordered_map<QString, QSt
     title->setFont(font);
     layout->addWidget(title);
     QString symbol;
+    // Adding data to BoxLayout
     for(auto ele : data)
     {
         if(ele.first == "weatherSymbol")
@@ -161,23 +182,19 @@ QWidget * MainWindow::createTraffcRoadconditionsChart(unordered_map<QString, QSt
     logolabel->setPixmap(QPixmap::fromImage(weatherLogo));
     layout->addWidget(logolabel);
     return window;
-    /*
-    QBrush weatherLogo = QImage(":/media/"+symbol+".png");
-    QChart *chart = new QChart();
-    QFont font;
-    font.setPixelSize(fontSize);
-    chart->setTitleFont(font);
-    chart->setTitle("Road Condition");
-    chart->setBackgroundBrush(weatherLogo);
-    chart->setAnimationOptions(QChart::AllAnimations);
-
-    QChartView *chartView = new QChartView(chart);
-    chartView->setRenderHint(QPainter::Antialiasing);
-    chartView->resize(750, 520);
-    return chartView;
-    */
 }
 
+/**
+ * @brief MainWindow::createMonthlyWeatherChart
+    Function for creating monthly averages chart. Takes monthly weather data and
+    font size as parameters and returns pointer to QChartView object
+ * @param data
+    Weather data
+ * @param fontSize
+    Font size for the title
+ * @return *QChartView
+    Created chart
+ */
 QChartView *MainWindow::createMonthlyWeatherChart(unordered_map<QString , vector<double>> weatherData, int fontSize)
 {
     QChart *chart = new QChart();
@@ -186,7 +203,7 @@ QChartView *MainWindow::createMonthlyWeatherChart(unordered_map<QString , vector
     axisX->setTickCount(30);
     chart->addAxis(axisX, Qt::AlignBottom);
 
-    //Avg temp
+    // Avg temp line chart
     QLineSeries *avgl_series = new QLineSeries();
     vector<double> avg = weatherData["avgtemp"];
     int i = 0;
@@ -208,7 +225,7 @@ QChartView *MainWindow::createMonthlyWeatherChart(unordered_map<QString , vector
     avgl_series->attachAxis(axisX);
     avgl_series->attachAxis(axisY);
 
-    //Max temp
+    // Max temp line chart
     QLineSeries *maxl_series = new QLineSeries();
     vector<double> max = weatherData["maxtemp"];
     int j = 0;
@@ -224,7 +241,7 @@ QChartView *MainWindow::createMonthlyWeatherChart(unordered_map<QString , vector
     maxl_series->attachAxis(axisY);
 
 
-    //Min temp
+    // Min temp line chart
     QLineSeries *minl_series = new QLineSeries();
     vector<double> min = weatherData["mintemp"];
     int k = 0;
@@ -269,9 +286,8 @@ QChartView * MainWindow::createWeatherChart(unordered_map<QString, vector<double
     QValueAxis *axisX = new QValueAxis();
     axisX->setTitleText("Time (h)");
 
+    // Wind bar chart
     QBarSeries *b_series = new QBarSeries();
-    /*unordered_map<QString, vector<double>>::const_iterator pos = weatherData.find("windspeed");
-    vector<double> wind = pos->second;*/
     vector<double> wind = weatherData["windspeed"];
     axisX->setTickCount(wind.size());
     chart->addAxis(axisX, Qt::AlignBottom);
@@ -291,9 +307,8 @@ QChartView * MainWindow::createWeatherChart(unordered_map<QString, vector<double
     b_series->attachAxis(axisX);
     b_series->attachAxis(axisY2);
 
+    // Temperature line chart
     QLineSeries *l_series = new QLineSeries();
-    /*unordered_map<QString, vector<double>>::const_iterator pos2 = weatherData.find("temperature");
-    vector<double> temp = pos2->second;*/
     vector<double> temp = weatherData["temperature"];
     int i = 0;
     for(auto t: temp)
@@ -343,9 +358,9 @@ QChartView * MainWindow::createWeatherChart(unordered_map<QString, vector<double
     Needed if contentType is 'combined'. Tells which type of weather data
     should be included. "observed" as default.
  */
-void MainWindow::createChart(QString contentType, QString dataType, unordered_map<QString, QString> data, unordered_map<QString, vector<double>> weatherData,
-                             QString traficDataType = "maintenance", QString weatherDataType = "observed")
+void MainWindow::createChart(QString contentType, QString dataType, unordered_map<QString, QString> data, unordered_map<QString, vector<double>> weatherData)
 {
+    // Traffic chart
     if(contentType == "traffic")
     {
         if(dataType == "maintenance")
@@ -362,9 +377,10 @@ void MainWindow::createChart(QString contentType, QString dataType, unordered_ma
             window->resize(1000, 600);
             window->show();
         }
-
+        // Weather chart
     }else if(contentType == "weather")
     {
+        // Monthly averages
         if(dataType == "lastMonth")
         {
             QChartView *monthView = createMonthlyWeatherChart(weatherData, 36);
@@ -377,13 +393,14 @@ void MainWindow::createChart(QString contentType, QString dataType, unordered_ma
             }
         }
 
+        // Combined chart
     } else if(contentType == "combined")
     {
-        //Traffic
+        //Traffic chart
         QChartView *chartView = createTrafficMaintanaceChart(data, 18);
         chartView->resize(500, 300);
 
-        //Weather
+        //Weather chart
         QChartView *chartView1 = createWeatherChart(weatherData, "observed", 18);
         if (chartView == nullptr) { return; }
         chartView1->resize(500, 300);
@@ -495,8 +512,6 @@ void MainWindow::onFetchDataButtonClicked()
         QString time = ui->timelineDropDown->currentText();
         time.replace(" hours", "");
         emit fetchDigiTraffic(source, trafficDataType, city, time);
-
-
     }else if(ui->weatherButton->isChecked())
     {
         QString source = "FMI";

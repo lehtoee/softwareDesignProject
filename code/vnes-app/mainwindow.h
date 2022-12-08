@@ -34,7 +34,7 @@ public:
     int weatherDataTypeDropDownIndex;
     int trafficDataTypeDropDownIndex;
 
-    void createChart(QString, QString, unordered_map<QString, QString>, unordered_map<QString, vector<double>>, QString, QString);
+    void createChart(QString, QString, unordered_map<QString, QString>, unordered_map<QString, vector<double>>);
 
 signals:
     void fetchDigiTraffic(QString source, QString datatype, QString location, QString time);

@@ -57,7 +57,7 @@ void Controller::pushButtonClicked(QString source, QString datatype,
 void Controller::createDigiTrafficChart(std::unordered_map<QString, QString> data, QString datatype, std::vector<QString> coordinates, QString time)
 {
     if (source_ == "digitraffic"){
-        view_->createChart("traffic", datatype, data, {}, datatype, "observed");
+        view_->createChart("traffic", datatype, data, {});
     }
     else {
         digitrafficData = data;
@@ -70,7 +70,7 @@ void Controller::createDigiTrafficChart(std::unordered_map<QString, QString> dat
 void Controller::createFMIChart(std::unordered_map<QString, std::vector<double> > data, QString datatype)
 {
     if (source_ == "FMI"){
-        view_->createChart("weather", datatype, {}, data, "", "");
+        view_->createChart("weather", datatype, {}, data);
     }
     else {
         qDebug() << "2323123";
@@ -83,7 +83,7 @@ void Controller::createCombinedChart()
 {
     if (fmiReady == true && digitrafficReady == true){
         qDebug() << "Toimii";
-        view_->createChart("combined", "", digitrafficData, fmiData, "", "");
+        view_->createChart("combined", "", digitrafficData, fmiData);
     }
     qDebug() << "Ei ihan";
     qDebug() << fmiReady;
