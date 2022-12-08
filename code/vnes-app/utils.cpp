@@ -32,9 +32,15 @@ std::vector<QString> utils::getCoordinates(QString location)
     else if (location == "Jyväskylä"){
         return std::vector<QString> {"25.7", "62.2", "25.8", "62.3"};
     }
-
 }
 
+/**
+ * @brief utils::getGeoID
+ * Get matching GeoID to possible cities in frontend GeoIDs are from geonames.org
+ * @param location City selected by user
+ * @return QString
+ * GeoID of selected city
+ */
 QString utils::getGeoID(QString location)
 {
     if (location == "Tampere"){
@@ -178,20 +184,33 @@ std::unordered_map<QString, QString> utils::parseJson(QJsonObject jsonData, QStr
     return digitrafficData;
 }
 
-
+/**
+ * @brief utils::parseXML
+ * Parses XML document from FMI api to values which are used with graphs
+ * @param content
+ * Content from the reply in networkhandler::XMLFetchFinished in QString format
+ * @return unordered_map<QString, vector<double>>
+ * Data found in XML file from fmi api parsed into double format
+ */
 std::unordered_map<QString, std::vector<double> > utils::parseXML(QString content)
 {
-    // Parses XML document from FMI api to values which are used with graphs
+    // Create a reader for the data (content) using QXmlStreamReader class
     QXmlStreamReader reader(content);
 
+    // Type of current data
     QString type;
+
+    // vectors for data gathered from the xml file
     std::vector<double> temperature;
     std::vector<double> windspeed;
     std::vector<double> avgtemp;
     std::vector<double> mintemp;
     std::vector<double> maxtemp;
 
+    // Stop reading the file when reaching the end
     while (!reader.atEnd()) {
+
+        // XML file always has a name and a value (ElementText) for every "row" this if - else if - else structure checks what data is found in current row and proceeds with it
         if ( reader.name() == QString("Time")) {
             QString time = reader.readElementText();
         }
@@ -228,6 +247,8 @@ std::unordered_map<QString, std::vector<double> > utils::parseXML(QString conten
         }
         reader.readNext();
     }
+
+    // save all the parsed data into a map, which is returned to networkhandler class
     std::unordered_map<QString, std::vector<double>> FMIdata = {
     {"temperature", temperature},
      {"windspeed", windspeed},

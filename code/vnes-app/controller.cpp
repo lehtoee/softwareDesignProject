@@ -7,9 +7,11 @@ Controller::Controller(NetworkHandler* networkhandler, MainWindow* view)
     : networkhandler_(networkhandler),
     view_(view)
 {
+    // connect fetch data button from frontend to controller
     connect(view_, &MainWindow::fetchDigiTraffic, this, &Controller::pushButtonClicked);
     connect(view_, &MainWindow::fetchFMI, this, &Controller::pushButtonClicked);
 
+    // Connect signal that data fetching is done and data is parsed
     connect(networkhandler_, &NetworkHandler::jsonReady, this, &Controller::createDigiTrafficChart);
     connect(networkhandler_, &NetworkHandler::xmlReady, this, &Controller::createFMIChart);
 }
@@ -19,7 +21,18 @@ Controller::~Controller()
     delete networkhandler_;
     delete view_;
 }
-
+/**
+ * @brief Controller::pushButtonClicked
+ * Handles the functionality after user clicks fetch button after selecting preferences for data
+ * @param source
+ * Source of data, fmi or digitraffic
+ * @param datatype
+ * Type of data selected by user
+ * @param location
+ * Selected city
+ * @param time
+ * Selected timeline
+ */
 void Controller::pushButtonClicked(QString source, QString datatype,
                                    QString location, QString time )
 {
@@ -29,9 +42,12 @@ void Controller::pushButtonClicked(QString source, QString datatype,
     source_ = source;
     datatype_ = datatype;
     location_ = location;
+
+    // Set flags for data readyness for combined data
     digitrafficReady = false;
     fmiReady = false;
 
+    // Operations based on source, FMI, digitraffic or both
     if(source == "FMI"){
         networkhandler_->fetchDataXML(datatype, location, startNendTime);
     }
@@ -99,17 +115,28 @@ void Controller::createCombinedChart()
     }
 }
 
+/**
+ * @brief Controller::parseTimeDate
+ * Gets and formats a TimeDate pair of current time and endtime for api fetching
+ * @param t
+ * timeline selected by user over witch data is to be fetched
+ * @param type
+ * Datatype, whether times are wanted for observations or forecast
+ * @return tuple<QString, QString>
+ *  pair of times formatted to ISO 8601 format
+ */
 std::tuple<QString, QString> Controller::parseTimeDate(QString t, QString type)
 {
+    // Get current computer time using ctime class
     char format [50];
     time_t currentTime = time(0);
     tm *localTime = localtime(&currentTime);
 
+    // Due to FMI api not providing observed data for the last 2 hours our "current time" is 2 hours before the function run time
     localTime->tm_hour -= 2;
 
+    // if - else to check if wanted time is t hours before now or from now
     if (type == "observed" || type == "maintenance" || type == ""){
-
-
         if (t == "2"){
 
             strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);

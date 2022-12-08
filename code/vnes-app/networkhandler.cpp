@@ -76,50 +76,72 @@ void NetworkHandler::jsonFetchFinished(QNetworkReply *reply)
 
 }
 
-
+/**
+ * @brief NetworkHandler::fetchDataXML
+ * Function for fetching XML data flie from FMI api
+ * @param datatype what data is wanted
+ * @param location the city selected by user
+ * @param time pair of times formatted for API URL
+ */
 
 void NetworkHandler::fetchDataXML(QString datatype, QString location, std::tuple<QString, QString> time)
 {
     QNetworkAccessManager *xmlmanager = new QNetworkAccessManager(this);
     connect(xmlmanager, &QNetworkAccessManager::finished, this, &NetworkHandler::XMLFetchFinished);
 
+    // Get the GeoID of the selected location to use in api calls
     QString GeoID = utilities->getGeoID(location);
+
+    // Create the URL based on the requested datatype
     QString baseURL = "https://opendata.fmi.fi/wfs?request=getFeature&version=2.0.0&storedquery_id=fmi";
     QString URLstring;
     datatype_ = datatype;
 
+    // Observed weather data from the location
     if(datatype == "observed"){
         URLstring = baseURL+"::observations::weather::hourly::simple&geoid="+GeoID+
                     "&starttime="+std::get<0>(time)+"&endtime="+std::get<1>(time)+"&timestep=30&parameters=t2m,ws_10min";
-        qDebug() << URLstring;
     }
+    // Forecast of weather based on request from user
     else if(datatype == "forecast") {
         URLstring = baseURL+"::forecast::harmonie::surface::point::simple&geoid="+GeoID+
                     "&starttime="+std::get<0>(time)+"&endtime="+std::get<1>(time)+"&timestep=30&parameters=temperature,windspeedms";
-        qDebug()<<URLstring;
     }
+    // Average, max and min temperature from the selected city over a month
     else if(datatype == "lastMonth") {
         URLstring = baseURL+"::observations::weather::daily::simple&geoid="+GeoID+"&parameters=tday,tmax,tmin";
-        qDebug() << URLstring;
     }
+    // Should never get here
     else{
         return;
     }
+    // Create a QUrl from the parsed url, create a request and send it using the xmlmanager
     const QUrl url = QUrl(URLstring);
     QNetworkRequest request(url);
     xmlmanager->get(request);
 }
 
+
+/**
+ * @brief NetworkHandler::XMLFetchFinished
+ * Slot for when reply is finished from FMI api
+ * @param reply
+ * Reply from api
+ * Emits a signal for controller to continue sending the data to frontend
+ */
 void NetworkHandler::XMLFetchFinished(QNetworkReply *reply)
 {
+    // Checks if reply is an error and prints out the error to console
     if(reply->error()){
         qDebug() << "error";
         qDebug() << reply->errorString();
         return;
     }
-    qDebug() << "XML Fetch ok";
+    // Reads the reply from the api and converts it to QString
     QByteArray byteArrayContent = reply->readAll();
     QString content = QString(byteArrayContent);
+
+    // Call the parse function for XML data
     std::unordered_map<QString, std::vector<double>> FMIdata = utilities->parseXML(content);
     emit xmlReady(FMIdata, datatype_);
 }
