@@ -23,8 +23,7 @@ public:
                            QString location, QString time);
     void createDigiTrafficChart(std::unordered_map<QString, QString> data, QString datatype, std::vector<QString> coordinates, QString time);
     void createFMIChart(std::unordered_map<QString, std::vector<double>> data, QString datatype);
-    void createCombinedChart(std::unordered_map<QString, std::vector<double>> FMIdata,
-                             std::unordered_map<QString, QString> digiTrafficData, QString datatype);
+    void createCombinedChart();
     void parseFMIData(QString datatype);
 
     void getTimeDate();
@@ -34,15 +33,18 @@ private:
     std::tuple<QString, QString> parseTimeDate(QString t, QString type);
     NetworkHandler* networkhandler_;
     MainWindow* view_;
-    struct timeNDate{
-        int hour;
-        int minute;
-        int year;
-        int month;
-        int day;
-    } timeDate;
+
     std::unordered_map<QString, QString> digitrafficData;
+    std::unordered_map<QString,std::vector<double>> fmiData;
+    std::tuple<QString, QString> startNendTime;
     QString source_;
+    QString datatype_;
+    QString location_;
+
+
+    bool digitrafficReady;
+    bool fmiReady;
+
 
     //testimapit
     std::unordered_map<QString, QString> trafficmessages;

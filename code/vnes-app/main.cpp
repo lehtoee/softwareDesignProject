@@ -28,8 +28,6 @@ int main(int argc, char *argv[])
  * Saha?
  *
  * Yleistä:
- *  -Yhdistetään chartcreation controllerissa
- *  -Combined datan lähetys
  *  -siivousta + dokumentaatiota
  *  -Trafficmessages fronttiin
  *

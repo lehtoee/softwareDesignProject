@@ -199,8 +199,8 @@ QChartView *MainWindow::createMonthlyWeatherChart(unordered_map<QString , vector
     chart->addSeries(avgl_series);
 
     QValueAxis *axisY = new QValueAxis;
-    axisY->setMax(15);
-    axisY->setMin(-10);
+    axisY->setMax(20);
+    axisY->setMin(-15);
     axisY->setTitleText("Temperature (C)");
     chart->addAxis(axisY, Qt::AlignLeft);
 
@@ -228,7 +228,7 @@ QChartView *MainWindow::createMonthlyWeatherChart(unordered_map<QString , vector
     QLineSeries *minl_series = new QLineSeries();
     vector<double> min = weatherData["mintemp"];
     int k = 0;
-    for(auto tmin: avg)
+    for(auto tmin: min)
     {
         minl_series->append(k, tmin);
         k++;

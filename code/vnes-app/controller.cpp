@@ -12,6 +12,8 @@ Controller::Controller(NetworkHandler* networkhandler, MainWindow* view)
     std::unordered_map<QString, QString> maintenance;
     std::unordered_map<QString, QString> roadconditions;
 
+
+
     connect(view_, &MainWindow::fetchDigiTraffic, this, &Controller::pushButtonClicked);
     connect(view_, &MainWindow::fetchFMI, this, &Controller::pushButtonClicked);
 
@@ -33,6 +35,12 @@ void Controller::pushButtonClicked(QString source, QString datatype,
     std::tuple<QString, QString> startNendTime = parseTimeDate(time, datatype);
     qDebug() << get<0>(startNendTime) + " - " + get<1>(startNendTime);
     source_ = source;
+    datatype_ = datatype;
+    location_ = location;
+    digitrafficReady = false;
+    fmiReady = false;
+
+
     if(source == "FMI"){
         networkhandler_->fetchDataXML(datatype, location, startNendTime);
     }
@@ -40,26 +48,46 @@ void Controller::pushButtonClicked(QString source, QString datatype,
         networkhandler_->fetchDataJson(datatype, location, time, startNendTime);
     }
     else {
-        networkhandler_->fetchDataXML(datatype, location, startNendTime);
-        networkhandler_->fetchDataJson(datatype, location, time, startNendTime);
+        networkhandler_->fetchDataXML("observed", location, startNendTime);
+        networkhandler_->fetchDataJson("maintenance", location, time, startNendTime);
     }
 
 }
 
 void Controller::createDigiTrafficChart(std::unordered_map<QString, QString> data, QString datatype, std::vector<QString> coordinates, QString time)
 {
-    view_->createChart("traffic", datatype, data, {}, datatype, "observed");
+    if (source_ == "digitraffic"){
+        view_->createChart("traffic", datatype, data, {}, datatype, "observed");
+    }
+    else {
+        digitrafficData = data;
+        digitrafficReady = true;
+        qDebug() << "123123123";
+        //networkhandler_->fetchDataXML("observed", location_, startNendTime);
+        createCombinedChart();
+    }
 }
-
 void Controller::createFMIChart(std::unordered_map<QString, std::vector<double> > data, QString datatype)
 {
-    view_->createChart("weather", datatype, {}, data, "", "");
+    if (source_ == "FMI"){
+        view_->createChart("weather", datatype, {}, data, "", "");
+    }
+    else {
+        qDebug() << "2323123";
+        fmiData = data;
+        fmiReady = true;
+        createCombinedChart();
+    }
 }
-
-void Controller::createCombinedChart(std::unordered_map<QString, std::vector<double>> FMIdata,
-                                    std::unordered_map<QString, QString> digiTrafficData, QString datatype)
+void Controller::createCombinedChart()
 {
-    view_->createChart("combined", datatype, digiTrafficData, FMIdata, "", "");
+    if (fmiReady == true && digitrafficReady == true){
+        qDebug() << "Toimii";
+        view_->createChart("combined", "", digitrafficData, fmiData, "", "");
+    }
+    qDebug() << "Ei ihan";
+    qDebug() << fmiReady;
+    qDebug() << digitrafficReady;
 }
 
 std::tuple<QString, QString> Controller::parseTimeDate(QString t, QString type)
@@ -70,7 +98,7 @@ std::tuple<QString, QString> Controller::parseTimeDate(QString t, QString type)
 
     localTime->tm_hour -= 2;
 
-    if (type == "observed" || type == "maintenance"){
+    if (type == "observed" || type == "maintenance" || type == ""){
 
 
         if (t == "2"){
@@ -79,7 +107,7 @@ std::tuple<QString, QString> Controller::parseTimeDate(QString t, QString type)
             QString endtime = format;
             if (localTime->tm_hour < 2){
                 int diff = localTime->tm_hour - 2;
-                localTime->tm_hour = 24 - diff;
+                localTime->tm_hour = 24 + diff;
                 localTime->tm_mday -= 1;
             }
             else{
@@ -97,7 +125,7 @@ std::tuple<QString, QString> Controller::parseTimeDate(QString t, QString type)
             QString endtime = format;
             if (localTime->tm_hour < 4){
                 int diff = localTime->tm_hour - 4;
-                localTime->tm_hour = 24 - diff;
+                localTime->tm_hour = 24 + diff;
                 localTime->tm_mday -= 1;
             }
             else{
@@ -114,7 +142,7 @@ std::tuple<QString, QString> Controller::parseTimeDate(QString t, QString type)
             QString endtime = format;
             if (localTime->tm_hour < 6){
                 int diff = localTime->tm_hour - 6;
-                localTime->tm_hour = 24 - diff;
+                localTime->tm_hour = 24 + diff;
                 localTime->tm_mday -= 1;
             }
             else{
@@ -131,7 +159,7 @@ std::tuple<QString, QString> Controller::parseTimeDate(QString t, QString type)
             QString endtime = format;
             if (localTime->tm_hour < 12){
                 int diff = localTime->tm_hour - 12;
-                localTime->tm_hour = 24 - diff;
+                localTime->tm_hour = 24 + diff;
                 localTime->tm_mday -= 1;
             }
             else{
@@ -151,13 +179,6 @@ std::tuple<QString, QString> Controller::parseTimeDate(QString t, QString type)
             QString starttime = format;
 
             return std::tuple<QString, QString>{starttime, endtime};
-        }
-        else if(t=="1m"){
-            strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
-            QString endtime = format;
-            localTime->tm_mon -= 1;
-            strftime(format, sizeof(format), "%Y-%m-%dT%H:00:00Z", localTime);
-            QString starttime = format;
         }
     }
     else {
