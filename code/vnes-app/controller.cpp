@@ -7,13 +7,6 @@ Controller::Controller(NetworkHandler* networkhandler, MainWindow* view)
     : networkhandler_(networkhandler),
     view_(view)
 {
-    std::unordered_map<QString, QString> digitrafficData;
-    std::unordered_map<QString, QString> trafficmessages;
-    std::unordered_map<QString, QString> maintenance;
-    std::unordered_map<QString, QString> roadconditions;
-
-
-
     connect(view_, &MainWindow::fetchDigiTraffic, this, &Controller::pushButtonClicked);
     connect(view_, &MainWindow::fetchFMI, this, &Controller::pushButtonClicked);
 
@@ -31,15 +24,13 @@ void Controller::pushButtonClicked(QString source, QString datatype,
                                    QString location, QString time )
 {
     // Get the start and end time of
-
     std::tuple<QString, QString> startNendTime = parseTimeDate(time, datatype);
-    qDebug() << get<0>(startNendTime) + " - " + get<1>(startNendTime);
+
     source_ = source;
     datatype_ = datatype;
     location_ = location;
     digitrafficReady = false;
     fmiReady = false;
-
 
     if(source == "FMI"){
         networkhandler_->fetchDataXML(datatype, location, startNendTime);
@@ -51,10 +42,19 @@ void Controller::pushButtonClicked(QString source, QString datatype,
         networkhandler_->fetchDataXML("observed", location, startNendTime);
         networkhandler_->fetchDataJson("maintenance", location, time, startNendTime);
     }
-
 }
 
-void Controller::createDigiTrafficChart(std::unordered_map<QString, QString> data, QString datatype, std::vector<QString> coordinates, QString time)
+/**
+ * @brief Controller::createDigiTrafficChart
+     Function for calling the function creating chart from digitraffic data.
+     Takes traffic data and datatype as parameters. Also calls the
+     function to create combined chart if source has been both API's
+ * @param data
+     Traffic data
+ * @param datatype
+     what data is fetched from the API
+ */
+void Controller::createDigiTrafficChart(std::unordered_map<QString, QString> data, QString datatype)
 {
     if (source_ == "digitraffic"){
         view_->createChart("traffic", datatype, data, {});
@@ -62,32 +62,41 @@ void Controller::createDigiTrafficChart(std::unordered_map<QString, QString> dat
     else {
         digitrafficData = data;
         digitrafficReady = true;
-        qDebug() << "123123123";
-        //networkhandler_->fetchDataXML("observed", location_, startNendTime);
         createCombinedChart();
     }
 }
+
+/**
+ * @brief Controller::createFMIChart
+     Function for calling the function creating chart from FMI data.
+     Takes weather data and datatype as parameters. Also calls the
+     function to create combined chart if source has been both API's
+ * @param data
+     Weather data
+ * @param datatype
+     what data is fetched from the API
+ */
 void Controller::createFMIChart(std::unordered_map<QString, std::vector<double> > data, QString datatype)
 {
     if (source_ == "FMI"){
         view_->createChart("weather", datatype, {}, data);
     }
     else {
-        qDebug() << "2323123";
         fmiData = data;
         fmiReady = true;
         createCombinedChart();
     }
 }
+
+/**
+ * @brief Controller::createCombinedChart
+     Function for calling the function creating chart from the data of both API's.
+ */
 void Controller::createCombinedChart()
 {
     if (fmiReady == true && digitrafficReady == true){
-        qDebug() << "Toimii";
         view_->createChart("combined", "", digitrafficData, fmiData);
     }
-    qDebug() << "Ei ihan";
-    qDebug() << fmiReady;
-    qDebug() << digitrafficReady;
 }
 
 std::tuple<QString, QString> Controller::parseTimeDate(QString t, QString type)

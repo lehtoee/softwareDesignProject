@@ -7,6 +7,14 @@ utils::utils()
 
 }
 
+/**
+ * @brief utils::getCoordinates
+     Function for converting the selected city into coordinates
+ * @param location
+     The city that the user has selected
+ * @return std::vector<QString>
+     A vector which has the coordinates
+ */
 std::vector<QString> utils::getCoordinates(QString location)
 {
     if (location == "Tampere"){
@@ -46,13 +54,29 @@ QString utils::getGeoID(QString location)
     }
 }
 
+/**
+ * @brief utils::parseJson
+     Function for parsing the digitraffic data
+ * @param datatype
+     What data is fetched from the API
+ * @param jsonData
+     The digitraffic data as QJsonObject
+ * @param time
+     From which time the data is wanted
+ * @param coordinates
+     From which location the data is wanted
+ * @return std::unordered_map<QString, QString>
+     The data parsed and inserted into unordered map
+ */
 std::unordered_map<QString, QString> utils::parseJson(QJsonObject jsonData, QString datatype, std::vector<QString> coordinates, QString time)
 {
     std::unordered_map<QString, QString> digitrafficData;
 
     if(datatype == "maintenance"){
         QJsonArray maintenanceFeatures = jsonData["features"].toArray();
+        //variable for making unique key for the datastructure
         int counter = 1;
+        //every maintenance task from the data inserted into the datastructure
         for(auto ele : maintenanceFeatures){
             QString task = ele.toObject().value("properties")
                                .toObject().value("tasks")[0].toString();
@@ -62,9 +86,9 @@ std::unordered_map<QString, QString> utils::parseJson(QJsonObject jsonData, QStr
     }
     else if(datatype == "roadconditions"){
         QJsonArray weatherData = jsonData["weatherData"].toArray();
-
         QJsonArray roadConditions = weatherData[0].toObject()
                                         .value("roadConditions").toArray();
+        //intializing the desired time for the data
         int forecast = 1;
         if(time == "4"){
             forecast = 2;
@@ -76,6 +100,7 @@ std::unordered_map<QString, QString> utils::parseJson(QJsonObject jsonData, QStr
             forecast = 4;
         }
 
+        //data parsed as QString's
         QString precipitationCondition = roadConditions[forecast].toObject()
              .value("forecastConditionReason").toObject()
              .value("precipitationCondition").toString();
@@ -116,11 +141,14 @@ std::unordered_map<QString, QString> utils::parseJson(QJsonObject jsonData, QStr
 
         int count = 0;
         for(auto ele : features){
+            //data parsed as QString and QJsonArray
             QString type = ele.toObject().value("geometry")
                                .toObject().value("type").toString();
             QJsonArray coords = ele.toObject().value("geometry")
                                     .toObject().value("coordinates").toArray();
 
+            //the amount of traffic messages in the desired location is counted
+            //from the different coordinate types that the data had
             if(type == "Point"){
                 if(coords[0].toDouble() > coordinates[0].toDouble()
                     && coords[0].toDouble() < coordinates[2].toDouble()
@@ -143,12 +171,10 @@ std::unordered_map<QString, QString> utils::parseJson(QJsonObject jsonData, QStr
             }
 
         }
-
         QString stringCount = "count";
 
         digitrafficData.insert({stringCount, QString::number(count)});
     }
-
     return digitrafficData;
 }
 

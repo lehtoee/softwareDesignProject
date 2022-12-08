@@ -8,15 +8,29 @@ NetworkHandler::NetworkHandler(QObject *parent):
     utils *utilities = new utils;
 }
 
+/**
+ * @brief NetworkHandler::fetchDataJson
+     Function for fetching the data from the Digitraffic API
+ * @param datatype
+     What data is fetched from the API
+ * @param location
+     From which city the data is wanted
+ * @param time
+     From which time the data is wanted
+ * @param startEndTime
+     From which time the data is wanted converted into time interval
+ */
 void NetworkHandler::fetchDataJson(QString datatype, QString location, QString time, std::tuple<QString, QString> startEndTime)
 {
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
     connect(manager, &QNetworkAccessManager::finished, this, &NetworkHandler::jsonFetchFinished);
 
     datatype_ = datatype;
+    //converting the selected city into coordinates
     coordinates_ = utilities->getCoordinates(location);
     time_ = time;
 
+    //forming the url for the network request
     QString myurl = "https://tie.digitraffic.fi/api/";
     if(datatype == "maintenance"){
         myurl = myurl + "maintenance/v1/tracking/routes?endFrom="
@@ -41,20 +55,23 @@ void NetworkHandler::fetchDataJson(QString datatype, QString location, QString t
     manager->get(request);
 }
 
-std::unordered_map<QString, QString> NetworkHandler::getJsonData()
-{
-    return jsonData_;
-}
-
-
+/**
+ * @brief NetworkHandler::jsonFetchFinished
+     Function for converting the data into QJsonObject, sending it to be parsed
+     and finally emiting the data back to the controller
+ * @param reply
+     The reply from the network request
+ */
 void NetworkHandler::jsonFetchFinished(QNetworkReply *reply)
 {
     //convert to Json object
     QByteArray input = reply->readAll();
     QJsonDocument document = QJsonDocument::fromJson(input);
     QJsonObject jsonObj = document.object();
+    //send it to the parse function in utilities
     jsonData_ = utilities->parseJson(jsonObj, datatype_, coordinates_, time_);
 
+    //emiting signal that the fetch is ready and the data has been parsed
     emit jsonReady(jsonData_, datatype_, coordinates_, time_);
 
 }

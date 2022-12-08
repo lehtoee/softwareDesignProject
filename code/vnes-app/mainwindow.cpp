@@ -411,9 +411,6 @@ void MainWindow::createChart(QString contentType, QString dataType, unordered_ma
         layout->addWidget(chartView1);
         window->resize(1000, 600);
         window->show();
-
-
-
     }
 
 }
@@ -506,7 +503,7 @@ void MainWindow::onFetchDataButtonClicked()
     //controller_->pushButtonClicked("Digitraffic", "traffic", j, "2022-01-19T10:06:38Z");
     if(ui->trafficButton->isChecked())
     {
-        QString source = "Digitraffic";
+        QString source = "digitraffic";
         QString trafficDataType = getTrafficDataType();
         QString city = ui->locationDropDown->currentText();
         QString time = ui->timelineDropDown->currentText();
